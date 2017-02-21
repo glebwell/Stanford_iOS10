@@ -29,10 +29,14 @@ struct CalculatorBrain {
         "√" : Operation.unaryOperation(sqrt),
         "cos" : Operation.unaryOperation(cos),
         "±" : Operation.unaryOperation(changeSign),
+        "㏑" : Operation.unaryOperation(log),
+        "eˣ" : Operation.unaryOperation(exp),
+        "x⁻¹" : Operation.unaryOperation({ 1.0 / $0 }),
         "×" : Operation.binaryOperation(*),
         "÷" : Operation.binaryOperation(/),
         "+" : Operation.binaryOperation(+),
         "-" : Operation.binaryOperation(-),
+        "xʸ" : Operation.binaryOperation(pow),
         "=" : Operation.equals
     ]
     
@@ -47,8 +51,8 @@ struct CalculatorBrain {
                 }
             case .binaryOperation(let function):
                 if accumulator != nil {
+                    performPendingBinaryOperation()
                     pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumulator!)
-                    accumulator = nil
                 }
             case .equals:
                 performPendingBinaryOperation()
