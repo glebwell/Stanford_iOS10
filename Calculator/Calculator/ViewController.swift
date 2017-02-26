@@ -12,6 +12,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var history: UILabel!
 
+    private lazy var formatter: NumberFormatter = {
+        var form = NumberFormatter()
+        form.minimumIntegerDigits = 1
+        form.maximumFractionDigits = 6
+        self.brain.setFormatter(form)
+        print("formatter was initialized")
+        return form
+    }()
+
     var userIsInTheMiddleOfTyping = false
 
     @IBAction func clear(_ sender: UIButton) {
@@ -27,7 +36,6 @@ class ViewController: UIViewController {
             userIsInTheMiddleOfTyping = true
         } else {
             let textCurrentlyInDisplay = display.text!
-            //display.text = textCurrentlyInDisplay + digit
             appendSymbolToDisplay(textCurrentlyInDisplay: textCurrentlyInDisplay, inputText: digit)
         }
     }
@@ -76,7 +84,13 @@ class ViewController: UIViewController {
             brain.performOperation(mathematicalSymbol)
         }
         if let result = brain.result {
-            displayValue = result
+            let optionalFormattedString = formatter.string(from: result as NSNumber)
+            if optionalFormattedString != nil {
+                display.text = optionalFormattedString
+            } else {
+                displayValue = result
+            }
+
         }
         updateDescription()
     }

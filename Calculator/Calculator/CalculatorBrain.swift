@@ -12,7 +12,13 @@ func changeSign(_ value: Double) -> Double {
     return -value
 }
 
+func makeRandomNumber() -> Double {
+    return Double(arc4random()) / Double(UInt32.max)
+}
+
 struct CalculatorBrain {
+
+    private var formatter: NumberFormatter?
 
     private var accumulatorTuple: (value: Double?, repr: String) = (nil, "")
 
@@ -22,6 +28,7 @@ struct CalculatorBrain {
         case constant(Double)
         case unaryOperation((Double) -> Double)
         case binaryOperation((Double, Double) -> Double)
+        case randomNumberGeneration(() -> Double)
         case equals
     }
 
@@ -39,40 +46,51 @@ struct CalculatorBrain {
         "+" : Operation.binaryOperation(+),
         "-" : Operation.binaryOperation(-),
         "xʸ" : Operation.binaryOperation(pow),
+        "Rand" : Operation.randomNumberGeneration(makeRandomNumber),
         "=" : Operation.equals
     ]
-
-    private var lastBinaryOperationSymbol: String?
 
     mutating func performOperation(_ symbol: String) {
         if let operation = operations[symbol] {
             switch operation {
             case .constant(let value):
                 accumulatorTuple.value = value
-
+            case .randomNumberGeneration(let generator):
+                let randomNumber = generator()
+                var formattingSuccess = false
+                if formatter != nil {
+                    if let optionalFormattedString = formatter!.string(from: randomNumber as NSNumber) {
+                        if let optionalFormattedDouble = formatter!.number(from: optionalFormattedString) as Double? {
+                            accumulatorTuple.value = optionalFormattedDouble
+                            formattingSuccess = true
+                        }
+                    }
+                }
+                if formattingSuccess == false {
+                    accumulatorTuple.value = randomNumber
+                }
             case .unaryOperation(let function):
                 if accumulatorTuple.value == nil {
                     accumulatorTuple.value = 0.0
                 }
                 if descriptionValue.isEmpty {
-                    descriptionValue = String(format: "%@(%@)", symbol, accumulatorToString!)
+                    descriptionValue = String(format: "%@(%@)", symbol, accumulatorToString()!)
                 } else if secondOperandWasSet {
                     descriptionValue = String(format: "%@(%@)", symbol, descriptionValue)
                 } else {
                     // TODO: make possible to do unaryOperations more than 1 time
-                    accumulatorTuple.repr = String(format: "%@(%@)", symbol, accumulatorToString!)
+                    accumulatorTuple.repr = String(format: "%@(%@)", symbol, accumulatorToString()!)
                     descriptionValue.append(accumulatorTuple.repr)
                     secondOperandWasSet = true
                 }
                 accumulatorTuple.value = function(accumulatorTuple.value!)
 
             case .binaryOperation(let function):
-                lastBinaryOperationSymbol = symbol
                 if accumulatorTuple.value == nil {
                     accumulatorTuple.value = 0.0
                 }
-                let secondOperandString = accumulatorToString!
-                performPendingBinaryOperation(operation: symbol)
+                let secondOperandString = accumulatorToString()!
+                performPendingBinaryOperation()
                 pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperand: accumulatorTuple.value!)
 
                 if descriptionValue.isEmpty {
@@ -84,8 +102,8 @@ struct CalculatorBrain {
                     descriptionValue += secondOperandString + symbol
                 }
             case .equals:
-                let secondOperandString = accumulatorToString!
-                performPendingBinaryOperation(operation: symbol)
+                let secondOperandString = accumulatorToString()!
+                performPendingBinaryOperation()
                 if secondOperandWasSet == false {
                     descriptionValue += secondOperandString
                 }
@@ -94,18 +112,26 @@ struct CalculatorBrain {
         }
     }
 
-    private func convertToStringForDescription(_ value: Double) -> String {
+    private mutating func convertToStringForDescription(_ value: Double) -> String {
         switch value {
         case Double.pi:
             return "π"
         case M_E:
             return "e"
         default:
-            return String(value)
+            if formatter != nil {
+                if let optionalFormattedString = formatter!.string(from: value as NSNumber) {
+                    return optionalFormattedString
+                } else {
+                    return String(value)
+                }
+            } else {
+                return String(value)
+            }
         }
     }
 
-    private var accumulatorToString: String? {
+    private mutating func accumulatorToString() -> String? {
         if let value = accumulatorTuple.value {
             return convertToStringForDescription(value)
         } else {
@@ -114,7 +140,7 @@ struct CalculatorBrain {
     }
 
 
-    private mutating func performPendingBinaryOperation(operation symbol: String) {
+    private mutating func performPendingBinaryOperation() {
         if (pendingBinaryOperation != nil && accumulatorTuple.value != nil) {
             accumulatorTuple.value = pendingBinaryOperation!.perform(with: accumulatorTuple.value!)
             pendingBinaryOperation = nil
@@ -157,6 +183,10 @@ struct CalculatorBrain {
         descriptionValue = ""
         secondOperandWasSet = false
         pendingBinaryOperation = nil
-        accumulatorTuple = (value: nil, repr:"")
+        accumulatorTuple = (value: nil, repr: "")
+    }
+
+    mutating func setFormatter(_ formatter: NumberFormatter) {
+        self.formatter = formatter
     }
 }
