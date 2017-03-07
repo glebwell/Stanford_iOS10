@@ -14,10 +14,13 @@ class ViewController: UIViewController {
 
     private lazy var formatter: NumberFormatter = {
         var form = NumberFormatter()
-        form.minimumIntegerDigits = 1
+        //form.minimumIntegerDigits = 1
+        form.numberStyle = .decimal
         form.maximumFractionDigits = 6
+        form.notANumberSymbol = "Error"
+        form.groupingSeparator = " "
+        form.locale = Locale.current
         self.brain.setFormatter(form)
-        print("formatter was initialized")
         return form
     }()
 
@@ -69,7 +72,7 @@ class ViewController: UIViewController {
             return Double(display.text!)!
         }
         set {
-            display.text = String(newValue)
+            display.text = formatter.string(from: NSNumber(value: newValue))
         }
     }
 
@@ -84,13 +87,7 @@ class ViewController: UIViewController {
             brain.performOperation(mathematicalSymbol)
         }
         if let result = brain.result {
-            let optionalFormattedString = formatter.string(from: result as NSNumber)
-            if optionalFormattedString != nil {
-                display.text = optionalFormattedString
-            } else {
-                displayValue = result
-            }
-
+            displayValue = result
         }
         updateDescription()
     }
