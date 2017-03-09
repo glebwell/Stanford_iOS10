@@ -29,6 +29,7 @@ struct CalculatorBrain {
         "e" : Operation.constant(M_E),
         "√" : Operation.unaryOperation(function: sqrt, description: {"√(" + $0 + ")"}),
         "cos" : Operation.unaryOperation(function: cos, description: {"cos(" + $0 + ")"}),
+        "sin" : Operation.unaryOperation(function: sin, description: {"sin(" + $0 + ")"}),
         "±" : Operation.unaryOperation(function: {-$0}, description: {"±(" + $0 + ")"}),
         "㏑" : Operation.unaryOperation(function: log, description: {"ln(" + $0 + ")"}),
         "eˣ" : Operation.unaryOperation(function: exp, description: {"e^" + $0}),
