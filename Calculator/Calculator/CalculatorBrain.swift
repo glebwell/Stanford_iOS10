@@ -12,10 +12,6 @@ struct CalculatorBrain {
 
     private var formatter: NumberFormatter?
 
-    private var accumulatorTuple: (value: Double, repr: String) = (0.0, "0")
-
-    private var lastOperationPriority = Int.max
-
     private enum Operation {
         case constant(Double)
         case unaryOperation(function:(Double) -> Double, description: (String) -> String)
@@ -23,6 +19,16 @@ struct CalculatorBrain {
         case randomNumberGeneration(function: () -> Double, description: String)
         case equals
     }
+
+    private enum CalculationItem {
+        case number(Double)
+        case variable(String)
+        case operationSymbol(String)
+    }
+
+    private var calculationSequence = Array<CalculationItem>()
+
+    private var variableMap = Dictionary<String, Double>()
 
     private var operations: Dictionary<String, Operation> = [
         "π" : Operation.constant(Double.pi),
@@ -44,81 +50,145 @@ struct CalculatorBrain {
     ]
 
     mutating func performOperation(_ symbol: String) {
-        if let operation = operations[symbol] {
-            switch operation {
-            case .constant(let value):
-                accumulatorTuple = (value: value, repr: symbol)
-            case .randomNumberGeneration(let generator, let descriptionValue):
-                accumulatorTuple = (value: generator(), repr: descriptionValue)
-            case .unaryOperation(let function, let descriptionFunction):
-                accumulatorTuple = (value: function(accumulatorTuple.value), repr: descriptionFunction(accumulatorTuple.repr))
-            case .binaryOperation(let function, let functionDescription, let operationPriority):
-                performPendingBinaryOperation()
-                if lastOperationPriority < operationPriority {
-                    accumulatorTuple.repr = "(" + accumulatorTuple.repr + ")"
-                }
-                lastOperationPriority = operationPriority
-                pendingInfo = PendingBinaryOperationInfo(function: function, firstOperand: accumulatorTuple.value, descriptionFunction: functionDescription, descriptionOperand: accumulatorTuple.repr)
+        calculationSequence.append(.operationSymbol(symbol))
+    }
 
-            case .equals:
-                performPendingBinaryOperation()
+
+    mutating func setOperand(variable named: String) {
+        calculationSequence.append(.variable(named))
+    }
+
+    mutating func setOperand(_ operand: Double) {
+        calculationSequence.append(.number(operand))
+    }
+
+
+    func evaluate(using variables: Dictionary<String, Double>? = nil) -> (result: Double?, isPending: Bool, description: String) {
+        var accumulator: Double?
+        var descriptionOfAccumulator: String = " "
+        var pendingInfo: PendingBinaryOperationInfo?
+        var lastOperationPriority = Int.max
+
+
+        var resultIsPending: Bool {
+            return pendingInfo != nil
+        }
+
+        struct PendingBinaryOperationInfo {
+            let function: (Double, Double) -> Double
+            let firstOperand: Double
+            let descriptionFunction: (String, String) -> String
+            let descriptionOperand: String
+
+            func perform(with secondOperand: Double) -> Double {
+                return function(firstOperand, secondOperand)
             }
+            func performDescription(with secondOperand: String) -> String {
+                return descriptionFunction(descriptionOperand, secondOperand)
+            }
+        }
+
+        func performPendingBinaryOperation() {
+            if (pendingInfo != nil) {
+                accumulator = pendingInfo!.perform(with: accumulator ?? 0.0)
+                descriptionOfAccumulator = pendingInfo!.performDescription(with: descriptionOfAccumulator)
+                pendingInfo = nil
+            }
+        }
+
+        var description: String {
+            get {
+                if resultIsPending {
+                    let secondOperand = pendingInfo!.descriptionOperand != descriptionOfAccumulator ? descriptionOfAccumulator : ""
+                    return pendingInfo!.performDescription(with: secondOperand)
+                } else {
+                    return descriptionOfAccumulator
+                }
+            }
+        }
+
+        func performOperation(_ symbol: String) {
+            if let operation = operations[symbol] {
+                switch operation {
+                case .constant(let value):
+                    accumulator = value
+                    descriptionOfAccumulator = symbol
+                case .randomNumberGeneration(let generator, let descriptionValue):
+                    accumulator = generator()
+                    descriptionOfAccumulator = descriptionValue
+                case .unaryOperation(let function, let descriptionFunction):
+                    if accumulator != nil {
+                        accumulator = function(accumulator!)
+                    }
+                    descriptionOfAccumulator = descriptionFunction(descriptionOfAccumulator)
+                case .binaryOperation(let function, let functionDescription, let operationPriority):
+                    performPendingBinaryOperation()
+                    if lastOperationPriority < operationPriority {
+                        descriptionOfAccumulator = "(" + descriptionOfAccumulator + ")"
+                    }
+                    lastOperationPriority = operationPriority
+                    if accumulator != nil {
+                        pendingInfo = PendingBinaryOperationInfo(function: function, firstOperand: accumulator!, descriptionFunction: functionDescription, descriptionOperand: descriptionOfAccumulator)
+                    }
+                case .equals:
+                    performPendingBinaryOperation()
+                }
+            }
+        }
+
+        func setOperand(operand: Double) {
+             accumulator = operand
+             if formatter != nil {
+                descriptionOfAccumulator = formatter!.string(from: NSNumber(value: operand)) ?? ""
+             } else {
+                descriptionOfAccumulator = String(operand)
+             }
+
+        }
+
+        func setOperand(variable named: String) {
+            accumulator = variableMap[named] ?? 0.0
+            descriptionOfAccumulator = named
+        }
+
+        guard !calculationSequence.isEmpty else {
+            return (nil, false, " ")
+        }
+
+        for calculationItem in calculationSequence {
+            switch calculationItem {
+            case .number(let value):
+                setOperand(operand: value)
+            case .variable(let name):
+                setOperand(variable: name)
+            case .operationSymbol(let symbol):
+                performOperation(symbol)
+            }
+        }
+
+        return (accumulator, resultIsPending, descriptionOfAccumulator)
+    }
+
+    var result: Double? {
+        get {
+            return evaluate().result
         }
     }
 
-    private mutating func performPendingBinaryOperation() {
-        if (pendingInfo != nil) {
-            accumulatorTuple.value = pendingInfo!.perform(with: accumulatorTuple.value)
-            accumulatorTuple.repr = pendingInfo!.descriptionFunction(pendingInfo!.descriptionOperand, accumulatorTuple.repr)
-            pendingInfo = nil
+    var resultIsPending: Bool {
+        get {
+            return evaluate().isPending
         }
     }
 
     var description: String {
         get {
-            if resultIsPending {
-                let secondOperand = pendingInfo!.descriptionOperand != accumulatorTuple.repr ? accumulatorTuple.repr : ""
-                return pendingInfo!.descriptionFunction(pendingInfo!.descriptionOperand, secondOperand)
-            } else {
-                return accumulatorTuple.repr
-            }
-        }
-    }
-    private var pendingInfo: PendingBinaryOperationInfo?
-
-    var resultIsPending: Bool {
-        return pendingInfo != nil
-    }
-
-    private struct PendingBinaryOperationInfo {
-        let function: (Double, Double) -> Double
-        let firstOperand: Double
-        let descriptionFunction: (String, String) -> String
-        let descriptionOperand: String
-
-        func perform(with secondOperand: Double) -> Double {
-            return function(firstOperand, secondOperand)
-        }
-    }
-
-    mutating func setOperand(_ operand: Double) {
-        accumulatorTuple.value = operand
-        if formatter != nil {
-            accumulatorTuple.repr = formatter!.string(from: NSNumber(value: operand)) ?? ""
-        } else {
-            accumulatorTuple.repr = String(operand)
-        }
-    }
-
-    var result: Double? {
-        get {
-            return accumulatorTuple.value
+            return evaluate().description
         }
     }
 
     mutating func clear() {
-        pendingInfo = nil
-        accumulatorTuple = (value: 0.0, repr: "0")
+        calculationSequence.removeAll()
     }
 
     mutating func setFormatter(_ formatter: NumberFormatter) {

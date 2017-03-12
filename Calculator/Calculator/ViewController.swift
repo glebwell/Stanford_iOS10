@@ -76,7 +76,10 @@ class ViewController: UIViewController {
         }
     }
 
+
+
     private var brain = CalculatorBrain()
+    private var variableValues = Dictionary<String, Double>()
 
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
@@ -86,7 +89,8 @@ class ViewController: UIViewController {
         if let mathematicalSymbol = sender.currentTitle {
             brain.performOperation(mathematicalSymbol)
         }
-        if let result = brain.result {
+
+        if let result = brain.evaluate(using: variableValues).result {
             displayValue = result
         }
         updateDescription()
@@ -97,6 +101,22 @@ class ViewController: UIViewController {
             let tail = brain.resultIsPending ? "..." : "="
             history.text = brain.description + tail
         }
+    }
+
+    @IBAction func putM(_ sender: UIButton) {
+        brain.setOperand(variable: sender.currentTitle!)
+        displayValue = brain.result ?? 0.0
+        //print("result:\(result); isPending:\(isPending); description: \(description)")
+    }
+    @IBAction func setM(_ sender: UIButton) {
+        let variableName = String(sender.currentTitle!.characters.dropFirst())
+        variableValues[variableName] = displayValue
+        let (result, isPending, description) = brain.evaluate(using: variableValues)
+        displayValue = result ?? 0
+        let tail = isPending ? "..." : "="
+        history.text = description + tail
+        print("result:\(result); isPending:\(isPending); description: \(description)")
+
     }
 }
 
