@@ -28,10 +28,9 @@ class ViewController: UIViewController {
     var userIsInTheMiddleOfTyping = false
 
     @IBAction func clear(_ sender: UIButton) {
-        display.text = "0"
-        history.text = " "
         brain.clear()
         variableValues.removeAll()
+        allDisplaysResult = brain.evaluate(using: variableValues)
     }
 
     @IBAction func touchDigit(_ sender: UIButton) {
@@ -53,20 +52,23 @@ class ViewController: UIViewController {
     }
 
     @IBAction func touchUndo(_ sender: UIButton) {
-        userIsInTheMiddleOfTyping ? backspace() : brain.undo()
+        userIsInTheMiddleOfTyping ? backspace() : undo()
     }
 
     @IBAction func touchBackspace(_ sender: UIButton) {
         backspace()
     }
 
+    private func undo() {
+        brain.undo()
+        allDisplaysResult = brain.evaluate(using: variableValues)
+    }
+
     private func backspace() {
-        if display.text != nil {
-            if display.text?.characters.count == 1 {
-                display.text = "0"
-            } else {
-                display.text!.characters.removeLast()
-            }
+        if display.text?.characters.count == 1 {
+            display.text = "0"
+        } else {
+            display.text?.characters.removeLast()
         }
     }
 
@@ -90,7 +92,11 @@ class ViewController: UIViewController {
     var allDisplaysResult: (result: Double?, isPending: Bool, description: String) = (nil, false, " ") {
         didSet {
             displayValue = allDisplaysResult.result ?? 0.0
-            history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+            if allDisplaysResult.description == " " {
+                history.text = " "
+            } else {
+                history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+            }
             displayM.text = "M = " + (formatter.string(from: NSNumber(value: variableValues["M"] ?? 0.0)) ?? "0")
         }
     }

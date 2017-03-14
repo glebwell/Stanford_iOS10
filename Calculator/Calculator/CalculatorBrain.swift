@@ -171,9 +171,9 @@ struct CalculatorBrain {
         return (accumulator, resultIsPending, description)
     }
 
-    func undo() {
+    mutating func undo() {
         if !calculationSequence.isEmpty {
-           let _ = calculationSequence.dropLast()
+           calculationSequence.removeLast()
         }
     }
 
