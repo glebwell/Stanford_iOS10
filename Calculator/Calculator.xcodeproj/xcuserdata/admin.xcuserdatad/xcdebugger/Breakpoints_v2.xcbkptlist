@@ -2,4 +2,116 @@
 <Bucket
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Calculator/ViewController.swift"
+            timestampString = "511189959.11708"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "setM(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Calculator/CalculatorBrain.swift"
+            timestampString = "511174202.197201"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "evaluate(using:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Calculator.CalculatorBrain.(evaluate (using : Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Double&gt;&gt;) -&gt; (result : Swift.Optional&lt;Swift.Double&gt;, isPending : Swift.Bool, description : Swift.String)).(performPendingBinaryOperation #1) () -&gt; ()"
+                  moduleName = "Calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Calculator/Calculator/CalculatorBrain.swift"
+                  timestampString = "511173847.29373"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "31">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Calculator.CalculatorBrain.(evaluate (using : Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Double&gt;&gt;) -&gt; (result : Swift.Optional&lt;Swift.Double&gt;, isPending : Swift.Bool, description : Swift.String)).(performOperation #1) (Swift.String) -&gt; ()"
+                  moduleName = "Calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Calculator/Calculator/CalculatorBrain.swift"
+                  timestampString = "511173847.30467"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "71">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Calculator.CalculatorBrain.(evaluate (using : Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Double&gt;&gt;) -&gt; (result : Swift.Optional&lt;Swift.Double&gt;, isPending : Swift.Bool, description : Swift.String)).(setOperand #1) (operand : Swift.Double) -&gt; ()"
+                  moduleName = "Calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Calculator/Calculator/CalculatorBrain.swift"
+                  timestampString = "511173847.315928"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "31">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Calculator.CalculatorBrain.(evaluate (using : Swift.Optional&lt;Swift.Dictionary&lt;Swift.String, Swift.Double&gt;&gt;) -&gt; (result : Swift.Optional&lt;Swift.Double&gt;, isPending : Swift.Bool, description : Swift.String)).(setOperand #2) (variable : Swift.String) -&gt; ()"
+                  moduleName = "Calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Calculator/Calculator/CalculatorBrain.swift"
+                  timestampString = "511173847.326871"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "45">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Calculator/CalculatorBrain.swift"
+            timestampString = "511174202.197201"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
+            landmarkName = "setOperand(variable:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

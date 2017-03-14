@@ -28,8 +28,6 @@ struct CalculatorBrain {
 
     private var calculationSequence = Array<CalculationItem>()
 
-    private var variableMap = Dictionary<String, Double>()
-
     private var operations: Dictionary<String, Operation> = [
         "π" : Operation.constant(Double.pi),
         "e" : Operation.constant(M_E),
@@ -147,7 +145,11 @@ struct CalculatorBrain {
         }
 
         func setOperand(variable named: String) {
-            accumulator = variableMap[named] ?? 0.0
+            if variables == nil {
+                accumulator = 0.0
+            } else {
+                accumulator = variables![named] ?? 0.0
+            }
             descriptionOfAccumulator = named
         }
 
@@ -166,7 +168,13 @@ struct CalculatorBrain {
             }
         }
 
-        return (accumulator, resultIsPending, descriptionOfAccumulator)
+        return (accumulator, resultIsPending, description)
+    }
+
+    func undo() {
+        if !calculationSequence.isEmpty {
+           let _ = calculationSequence.dropLast()
+        }
     }
 
     var result: Double? {

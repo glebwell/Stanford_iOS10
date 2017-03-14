@@ -11,6 +11,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var history: UILabel!
+    @IBOutlet weak var displayM: UILabel!
 
     private lazy var formatter: NumberFormatter = {
         var form = NumberFormatter()
@@ -30,6 +31,7 @@ class ViewController: UIViewController {
         display.text = "0"
         history.text = " "
         brain.clear()
+        variableValues.removeAll()
     }
 
     @IBAction func touchDigit(_ sender: UIButton) {
@@ -50,8 +52,16 @@ class ViewController: UIViewController {
         }
     }
 
+    @IBAction func touchUndo(_ sender: UIButton) {
+        userIsInTheMiddleOfTyping ? backspace() : brain.undo()
+    }
+
     @IBAction func touchBackspace(_ sender: UIButton) {
-        if userIsInTheMiddleOfTyping && display.text != nil {
+        backspace()
+    }
+
+    private func backspace() {
+        if display.text != nil {
             if display.text?.characters.count == 1 {
                 display.text = "0"
             } else {
@@ -59,6 +69,7 @@ class ViewController: UIViewController {
             }
         }
     }
+
     private func appendSymbolToDisplay(textCurrentlyInDisplay displayText:String, inputText textToInsert:String) {
         if displayValue == 0.0 && display.text!.contains(".") == false { // flush and insert new symbol
             display.text = textToInsert
@@ -76,6 +87,13 @@ class ViewController: UIViewController {
         }
     }
 
+    var allDisplaysResult: (result: Double?, isPending: Bool, description: String) = (nil, false, " ") {
+        didSet {
+            displayValue = allDisplaysResult.result ?? 0.0
+            history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+            displayM.text = "M = " + (formatter.string(from: NSNumber(value: variableValues["M"] ?? 0.0)) ?? "0")
+        }
+    }
 
 
     private var brain = CalculatorBrain()
@@ -89,34 +107,18 @@ class ViewController: UIViewController {
         if let mathematicalSymbol = sender.currentTitle {
             brain.performOperation(mathematicalSymbol)
         }
-
-        if let result = brain.evaluate(using: variableValues).result {
-            displayValue = result
-        }
-        updateDescription()
-    }
-
-    private func updateDescription() {
-        if !brain.description.isEmpty {
-            let tail = brain.resultIsPending ? "..." : "="
-            history.text = brain.description + tail
-        }
+        allDisplaysResult = brain.evaluate(using: variableValues)
     }
 
     @IBAction func putM(_ sender: UIButton) {
         brain.setOperand(variable: sender.currentTitle!)
-        displayValue = brain.result ?? 0.0
-        //print("result:\(result); isPending:\(isPending); description: \(description)")
+        allDisplaysResult = brain.evaluate(using: variableValues)
+        userIsInTheMiddleOfTyping = false
     }
     @IBAction func setM(_ sender: UIButton) {
         let variableName = String(sender.currentTitle!.characters.dropFirst())
         variableValues[variableName] = displayValue
-        let (result, isPending, description) = brain.evaluate(using: variableValues)
-        displayValue = result ?? 0
-        let tail = isPending ? "..." : "="
-        history.text = description + tail
-        print("result:\(result); isPending:\(isPending); description: \(description)")
-
+        allDisplaysResult = brain.evaluate(using: variableValues)
     }
 }
 
