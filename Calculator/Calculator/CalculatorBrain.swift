@@ -14,7 +14,7 @@ struct CalculatorBrain {
 
     private enum Operation {
         case constant(Double)
-        case unaryOperation(function:(Double) -> Double, description: (String) -> String)
+        case unaryOperation(function:(Double) -> Double, description: (String) -> String, validator: ((Double) -> Bool)?, errorText: String?)
         case binaryOperation(function: (Double, Double) -> Double, description: (String, String) -> String, priority: Int)
         case randomNumberGeneration(function: () -> Double, description: String)
         case equals
@@ -31,13 +31,15 @@ struct CalculatorBrain {
     private var operations: Dictionary<String, Operation> = [
         "π" : Operation.constant(Double.pi),
         "e" : Operation.constant(M_E),
-        "√" : Operation.unaryOperation(function: sqrt, description: {"√(" + $0 + ")"}),
-        "cos" : Operation.unaryOperation(function: cos, description: {"cos(" + $0 + ")"}),
-        "sin" : Operation.unaryOperation(function: sin, description: {"sin(" + $0 + ")"}),
-        "±" : Operation.unaryOperation(function: {-$0}, description: {"±(" + $0 + ")"}),
-        "㏑" : Operation.unaryOperation(function: log, description: {"ln(" + $0 + ")"}),
-        "eˣ" : Operation.unaryOperation(function: exp, description: {"e^" + $0}),
-        "x⁻¹" : Operation.unaryOperation(function: {1.0/$0}, description: {"(" + $0 + ")⁻¹"}),
+        "√" : Operation.unaryOperation(function: sqrt, description: {"√(" + $0 + ")"}, validator: {$0 >= 0.0}, errorText: "Fail to get sqrt from negative number"),
+        "cos" : Operation.unaryOperation(function: cos, description: {"cos(" + $0 + ")"}, validator: {$0 >= -1.0 && $0 <= 1.0},
+                                         errorText: "Number must be in range [-1, 1]"),
+        "sin" : Operation.unaryOperation(function: sin, description: {"sin(" + $0 + ")"}, validator: {$0 >= -1.0 && $0 <= 1.0},
+                                         errorText: "Number must be in range [-1, 1]"),
+        "±" : Operation.unaryOperation(function: {-$0}, description: {"±(" + $0 + ")"}, validator: nil, errorText: nil),
+        "㏑" : Operation.unaryOperation(function: log, description: {"ln(" + $0 + ")"}, validator: {$0 > 0.0}, errorText: "Fail to get logarithm of negative number"),
+        "eˣ" : Operation.unaryOperation(function: exp, description: {"e^" + $0}, validator: nil, errorText: nil),
+        "x⁻¹" : Operation.unaryOperation(function: {1.0/$0}, description: {"(" + $0 + ")⁻¹"}, validator: {$0 != 0.0}, errorText: "Number must be nonzero"),
         "×" : Operation.binaryOperation(function: *, description: {$0 + "×" + $1}, priority: 1),
         "÷" : Operation.binaryOperation(function: /, description: {$0 + "÷" + $1}, priority: 1),
         "+" : Operation.binaryOperation(function: +, description: {$0 + "+" + $1}, priority: 0),
@@ -114,11 +116,17 @@ struct CalculatorBrain {
                 case .randomNumberGeneration(let generator, let descriptionValue):
                     accumulator = generator()
                     descriptionOfAccumulator = descriptionValue
-                case .unaryOperation(let function, let descriptionFunction):
+                case .unaryOperation(let function, let descriptionFunction, let validator, let errorText):
                     if accumulator != nil {
                         accumulator = function(accumulator!)
+                        if validator != nil && errorText != nil {
+                            if validator!(accumulator!) == false {
+                                descriptionOfAccumulator = errorText!
+                            }
+                        } else {
+                            descriptionOfAccumulator = descriptionFunction(descriptionOfAccumulator)
+                        }
                     }
-                    descriptionOfAccumulator = descriptionFunction(descriptionOfAccumulator)
                 case .binaryOperation(let function, let functionDescription, let operationPriority):
                     performPendingBinaryOperation()
                     if lastOperationPriority < operationPriority {
