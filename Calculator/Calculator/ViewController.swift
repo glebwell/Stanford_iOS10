@@ -25,6 +25,14 @@ class ViewController: UIViewController {
         return form
     }()
 
+    private enum LastOperation {
+        case performOperation
+        case setVariable
+    }
+
+    private var lastOperation: LastOperation?
+    private var lastVariable: (name: String, value: Double)?
+
     var userIsInTheMiddleOfTyping = false
 
     @IBAction func clear(_ sender: UIButton) {
@@ -60,8 +68,17 @@ class ViewController: UIViewController {
     }
 
     private func undo() {
-        brain.undo()
-        allDisplaysResult = brain.evaluate(using: variableValues)
+        if let operation = lastOperation {
+            switch operation {
+            case .setVariable:
+                if lastVariable != nil { // back to previous variable value
+                    variableValues[lastVariable!.name] = lastVariable!.value
+                }
+            case .performOperation:
+                brain.undo()
+                allDisplaysResult = brain.evaluate(using: variableValues)
+            }
+        }
     }
 
     private func backspace() {
@@ -89,14 +106,20 @@ class ViewController: UIViewController {
         }
     }
 
-    var allDisplaysResult: (result: Double?, isPending: Bool, description: String) = (nil, false, " ") {
+    var allDisplaysResult: (result: Double?, isPending: Bool, description: String, error: String?) = (nil, false, " ", nil) {
         didSet {
-            displayValue = allDisplaysResult.result ?? 0.0
-            if allDisplaysResult.description == " " {
-                history.text = " "
+            if allDisplaysResult.error == nil {
+                displayValue = allDisplaysResult.result ?? 0.0
+                if allDisplaysResult.description == " " {
+                    history.text = " "
+                } else {
+                    history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+                }
             } else {
-                history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+                display.text = allDisplaysResult.error
+                history.text = " "
             }
+
             displayM.text = "M = " + (formatter.string(from: NSNumber(value: variableValues["M"] ?? 0.0)) ?? "0")
         }
     }
@@ -114,6 +137,7 @@ class ViewController: UIViewController {
             brain.performOperation(mathematicalSymbol)
         }
         allDisplaysResult = brain.evaluate(using: variableValues)
+        lastOperation = .performOperation
     }
 
     @IBAction func putM(_ sender: UIButton) {
@@ -123,8 +147,10 @@ class ViewController: UIViewController {
     }
     @IBAction func setM(_ sender: UIButton) {
         let variableName = String(sender.currentTitle!.characters.dropFirst())
+        lastVariable = (name: variableName, value: variableValues[variableName] ?? 0.0) // save old variable
         variableValues[variableName] = displayValue
         allDisplaysResult = brain.evaluate(using: variableValues)
+        lastOperation = .setVariable
     }
 }
 

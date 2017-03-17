@@ -15,7 +15,8 @@ struct CalculatorBrain {
     private enum Operation {
         case constant(Double)
         case unaryOperation(function:(Double) -> Double, description: (String) -> String, validator: ((Double) -> Bool)?, errorText: String?)
-        case binaryOperation(function: (Double, Double) -> Double, description: (String, String) -> String, priority: Int)
+        case binaryOperation(function: (Double, Double) -> Double, description: (String, String) -> String,
+            priority: Int, validator: ((Double) -> Bool)?, errorText: String?)
         case randomNumberGeneration(function: () -> Double, description: String)
         case equals
     }
@@ -39,12 +40,12 @@ struct CalculatorBrain {
         "±" : Operation.unaryOperation(function: {-$0}, description: {"±(" + $0 + ")"}, validator: nil, errorText: nil),
         "㏑" : Operation.unaryOperation(function: log, description: {"ln(" + $0 + ")"}, validator: {$0 > 0.0}, errorText: "Fail to get logarithm of negative number"),
         "eˣ" : Operation.unaryOperation(function: exp, description: {"e^" + $0}, validator: nil, errorText: nil),
-        "x⁻¹" : Operation.unaryOperation(function: {1.0/$0}, description: {"(" + $0 + ")⁻¹"}, validator: {$0 != 0.0}, errorText: "Number must be nonzero"),
-        "×" : Operation.binaryOperation(function: *, description: {$0 + "×" + $1}, priority: 1),
-        "÷" : Operation.binaryOperation(function: /, description: {$0 + "÷" + $1}, priority: 1),
-        "+" : Operation.binaryOperation(function: +, description: {$0 + "+" + $1}, priority: 0),
-        "-" : Operation.binaryOperation(function: -, description: {$0 + "-" + $1}, priority: 0),
-        "xʸ" : Operation.binaryOperation(function: pow, description: {$0 + "^" + $1}, priority: 2),
+        "x⁻¹" : Operation.unaryOperation(function: {1.0/$0}, description: {"(" + $0 + ")⁻¹"}, validator: {$0 != 0.0}, errorText: "Devide by zero"),
+        "×" : Operation.binaryOperation(function: *, description: {$0 + "×" + $1}, priority: 1, validator: nil, errorText: nil),
+        "÷" : Operation.binaryOperation(function: /, description: {$0 + "÷" + $1}, priority: 1, validator: {$0 != 0.0}, errorText: "Devide by zero"),
+        "+" : Operation.binaryOperation(function: +, description: {$0 + "+" + $1}, priority: 0, validator: nil, errorText: nil),
+        "-" : Operation.binaryOperation(function: -, description: {$0 + "-" + $1}, priority: 0, validator: nil, errorText: nil),
+        "xʸ" : Operation.binaryOperation(function: pow, description: {$0 + "^" + $1}, priority: 2, validator: nil, errorText: nil),
         "Rand" : Operation.randomNumberGeneration(function: {Double(arc4random()) / Double(UInt32.max)}, description: "rand()"),
         "=" : Operation.equals
     ]
@@ -63,11 +64,12 @@ struct CalculatorBrain {
     }
 
 
-    func evaluate(using variables: Dictionary<String, Double>? = nil) -> (result: Double?, isPending: Bool, description: String) {
+    func evaluate(using variables: Dictionary<String, Double>? = nil) -> (result: Double?, isPending: Bool, description: String, error: String?) {
         var accumulator: Double?
         var descriptionOfAccumulator: String = " "
         var pendingInfo: PendingBinaryOperationInfo?
         var lastOperationPriority = Int.max
+        var error: String?
 
 
         var resultIsPending: Bool {
@@ -86,10 +88,18 @@ struct CalculatorBrain {
             func performDescription(with secondOperand: String) -> String {
                 return descriptionFunction(descriptionOperand, secondOperand)
             }
+            func validate(what secondOperand: Double, errorText: inout String?) {
+                if validator?(secondOperand) == false {
+                    errorText = errorTextInValidation
+                }
+            }
+            var validator: ((Double) -> Bool)?
+            var errorTextInValidation: String?
         }
 
-        func performPendingBinaryOperation() {
+        func performPendingBinaryOperation(errorMessage: inout String?) {
             if (pendingInfo != nil) {
+                pendingInfo!.validate(what: accumulator ?? 0.0, errorText: &errorMessage)
                 accumulator = pendingInfo!.perform(with: accumulator ?? 0.0)
                 descriptionOfAccumulator = pendingInfo!.performDescription(with: descriptionOfAccumulator)
                 pendingInfo = nil
@@ -117,38 +127,33 @@ struct CalculatorBrain {
                     accumulator = generator()
                     descriptionOfAccumulator = descriptionValue
                 case .unaryOperation(let function, let descriptionFunction, let validator, let errorText):
-                    if accumulator != nil {
-                        accumulator = function(accumulator!)
-                        if validator != nil && errorText != nil {
-                            if validator!(accumulator!) == false {
-                                descriptionOfAccumulator = errorText!
-                            }
-                        } else {
-                            descriptionOfAccumulator = descriptionFunction(descriptionOfAccumulator)
-                        }
+                    if validator?(accumulator ?? 0.0) == false {
+                        error = errorText
                     }
-                case .binaryOperation(let function, let functionDescription, let operationPriority):
-                    performPendingBinaryOperation()
+                    descriptionOfAccumulator = descriptionFunction(descriptionOfAccumulator)
+                    accumulator = function(accumulator ?? 0.0)
+                case .binaryOperation(let function, let functionDescription, let operationPriority, let validator, let errorText):
+                    performPendingBinaryOperation(errorMessage: &error)
                     if lastOperationPriority < operationPriority {
                         descriptionOfAccumulator = "(" + descriptionOfAccumulator + ")"
                     }
                     lastOperationPriority = operationPriority
                     if accumulator != nil {
-                        pendingInfo = PendingBinaryOperationInfo(function: function, firstOperand: accumulator!, descriptionFunction: functionDescription, descriptionOperand: descriptionOfAccumulator)
+                        pendingInfo = PendingBinaryOperationInfo(function: function, firstOperand: accumulator!, descriptionFunction: functionDescription, descriptionOperand: descriptionOfAccumulator, validator: validator, errorTextInValidation: errorText)
                     }
                 case .equals:
-                    performPendingBinaryOperation()
+                    performPendingBinaryOperation(errorMessage: &error)
                 }
             }
         }
 
         func setOperand(operand: Double) {
-             accumulator = operand
-             if formatter != nil {
+            accumulator = operand
+            if formatter != nil {
                 descriptionOfAccumulator = formatter!.string(from: NSNumber(value: operand)) ?? ""
-             } else {
+            } else {
                 descriptionOfAccumulator = String(operand)
-             }
+            }
 
         }
 
@@ -162,7 +167,7 @@ struct CalculatorBrain {
         }
 
         guard !calculationSequence.isEmpty else {
-            return (nil, false, " ")
+            return (nil, false, " ", nil)
         }
 
         for calculationItem in calculationSequence {
@@ -176,12 +181,12 @@ struct CalculatorBrain {
             }
         }
 
-        return (accumulator, resultIsPending, description)
+        return (accumulator, resultIsPending, description, error)
     }
 
     mutating func undo() {
         if !calculationSequence.isEmpty {
-           calculationSequence.removeLast()
+            calculationSequence.removeLast()
         }
     }
 
