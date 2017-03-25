@@ -11,6 +11,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var history: UILabel!
+    @IBOutlet weak var displayM: UILabel!
 
     private lazy var formatter: NumberFormatter = {
         var form = NumberFormatter()
@@ -24,12 +25,20 @@ class ViewController: UIViewController {
         return form
     }()
 
+    private enum LastOperation {
+        case performOperation
+        case setVariable
+    }
+
+    private var lastOperation: LastOperation?
+    private var lastVariable: (name: String, value: Double)?
+
     var userIsInTheMiddleOfTyping = false
 
     @IBAction func clear(_ sender: UIButton) {
-        display.text = "0"
-        history.text = " "
         brain.clear()
+        variableValues.removeAll()
+        allDisplaysResult = brain.evaluate(using: variableValues)
     }
 
     @IBAction func touchDigit(_ sender: UIButton) {
@@ -50,15 +59,36 @@ class ViewController: UIViewController {
         }
     }
 
+    @IBAction func touchUndo(_ sender: UIButton) {
+        userIsInTheMiddleOfTyping ? backspace() : undo()
+    }
+
     @IBAction func touchBackspace(_ sender: UIButton) {
-        if userIsInTheMiddleOfTyping && display.text != nil {
-            if display.text?.characters.count == 1 {
-                display.text = "0"
-            } else {
-                display.text!.characters.removeLast()
+        backspace()
+    }
+
+    private func undo() {
+        if let operation = lastOperation {
+            switch operation {
+            case .setVariable:
+                if lastVariable != nil { // back to previous variable value
+                    variableValues[lastVariable!.name] = lastVariable!.value
+                }
+            case .performOperation:
+                brain.undo()
+                allDisplaysResult = brain.evaluate(using: variableValues)
             }
         }
     }
+
+    private func backspace() {
+        if display.text?.characters.count == 1 {
+            display.text = "0"
+        } else {
+            display.text?.characters.removeLast()
+        }
+    }
+
     private func appendSymbolToDisplay(textCurrentlyInDisplay displayText:String, inputText textToInsert:String) {
         if displayValue == 0.0 && display.text!.contains(".") == false { // flush and insert new symbol
             display.text = textToInsert
@@ -76,7 +106,27 @@ class ViewController: UIViewController {
         }
     }
 
+    var allDisplaysResult: (result: Double?, isPending: Bool, description: String, error: String?) = (nil, false, " ", nil) {
+        didSet {
+            if allDisplaysResult.error == nil {
+                displayValue = allDisplaysResult.result ?? 0.0
+                if allDisplaysResult.description == " " {
+                    history.text = " "
+                } else {
+                    history.text = allDisplaysResult.description + (allDisplaysResult.isPending ? "..." : "=")
+                }
+            } else {
+                display.text = allDisplaysResult.error
+                history.text = " "
+            }
+
+            displayM.text = "M = " + (formatter.string(from: NSNumber(value: variableValues["M"] ?? 0.0)) ?? "0")
+        }
+    }
+
+
     private var brain = CalculatorBrain()
+    private var variableValues = Dictionary<String, Double>()
 
     @IBAction func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
@@ -86,17 +136,21 @@ class ViewController: UIViewController {
         if let mathematicalSymbol = sender.currentTitle {
             brain.performOperation(mathematicalSymbol)
         }
-        if let result = brain.result {
-            displayValue = result
-        }
-        updateDescription()
+        allDisplaysResult = brain.evaluate(using: variableValues)
+        lastOperation = .performOperation
     }
 
-    private func updateDescription() {
-        if !brain.description.isEmpty {
-            let tail = brain.resultIsPending ? "..." : "="
-            history.text = brain.description + tail
-        }
+    @IBAction func putM(_ sender: UIButton) {
+        brain.setOperand(variable: sender.currentTitle!)
+        allDisplaysResult = brain.evaluate(using: variableValues)
+        userIsInTheMiddleOfTyping = false
+    }
+    @IBAction func setM(_ sender: UIButton) {
+        let variableName = String(sender.currentTitle!.characters.dropFirst())
+        lastVariable = (name: variableName, value: variableValues[variableName] ?? 0.0) // save old variable
+        variableValues[variableName] = displayValue
+        allDisplaysResult = brain.evaluate(using: variableValues)
+        lastOperation = .setVariable
     }
 }
 
