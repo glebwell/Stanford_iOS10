@@ -163,7 +163,10 @@ class CalculatorViewController: UIViewController {
         if let identifier = segue.identifier,
             identifier == graphSegueIdentifier,
             let vc = destination as? GraphingViewController {
-            vc.graphingFunction = { 1/$0 }
+            vc.graphingFunction = { [weak weakSelf = self] x in
+                weakSelf?.variableValues["M"] = x
+                return weakSelf?.brain.evaluate(using: weakSelf?.variableValues).result ?? 0.0
+            }
             vc.navigationItem.title = "y = " + brain.description
 
         }
