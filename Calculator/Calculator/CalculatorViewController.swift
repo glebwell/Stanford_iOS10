@@ -164,11 +164,9 @@ class CalculatorViewController: UIViewController {
             identifier == graphSegueIdentifier,
             let vc = destination as? GraphingViewController {
             vc.graphingFunction = { [weak weakSelf = self] x in
-                weakSelf?.variableValues["M"] = x
-                return weakSelf?.brain.evaluate(using: weakSelf?.variableValues).result ?? 0.0
+                return weakSelf?.brain.evaluate(using: ["M": x]).result ?? 0.0
             }
             vc.navigationItem.title = "y = " + brain.description
-
         }
     }
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
