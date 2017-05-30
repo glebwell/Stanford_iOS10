@@ -9,21 +9,29 @@
 /* Begin PBXBuildFile section */
 		842FBC6A1E541CAD0050C525 /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842FBC691E541CAD0050C525 /* CalculatorBrain.swift */; };
 		84CC245C1E51E84800C75671 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CC245B1E51E84800C75671 /* AppDelegate.swift */; };
-		84CC245E1E51E84800C75671 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CC245D1E51E84800C75671 /* ViewController.swift */; };
+		84CC245E1E51E84800C75671 /* CalculatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CC245D1E51E84800C75671 /* CalculatorViewController.swift */; };
 		84CC24611E51E84800C75671 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CC245F1E51E84800C75671 /* Main.storyboard */; };
 		84CC24631E51E84800C75671 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84CC24621E51E84800C75671 /* Assets.xcassets */; };
 		84CC24661E51E84800C75671 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CC24641E51E84800C75671 /* LaunchScreen.storyboard */; };
+		F7413F591E92C58900330208 /* GraphingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7413F581E92C58900330208 /* GraphingViewController.swift */; };
+		F77D0FA81E87CDD900AE9102 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77D0FA71E87CDD900AE9102 /* AxesDrawer.swift */; };
+		F77D0FAA1E87CE6500AE9102 /* GraphingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77D0FA91E87CE6500AE9102 /* GraphingView.swift */; };
+		F77D0FAE1E8F959E00AE9102 /* loading_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = F77D0FAD1E8F959E00AE9102 /* loading_icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		842FBC691E541CAD0050C525 /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
 		84CC24581E51E84800C75671 /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84CC245B1E51E84800C75671 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		84CC245D1E51E84800C75671 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		84CC245D1E51E84800C75671 /* CalculatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewController.swift; sourceTree = "<group>"; };
 		84CC24601E51E84800C75671 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		84CC24621E51E84800C75671 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84CC24651E51E84800C75671 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84CC24671E51E84800C75671 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F7413F581E92C58900330208 /* GraphingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphingViewController.swift; sourceTree = "<group>"; };
+		F77D0FA71E87CDD900AE9102 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
+		F77D0FA91E87CE6500AE9102 /* GraphingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphingView.swift; sourceTree = "<group>"; };
+		F77D0FAD1E8F959E00AE9102 /* loading_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading_icon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,9 +64,12 @@
 		84CC245A1E51E84800C75671 /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
-				84CC245D1E51E84800C75671 /* ViewController.swift */,
+				F77D0FA71E87CDD900AE9102 /* AxesDrawer.swift */,
+				84CC245D1E51E84800C75671 /* CalculatorViewController.swift */,
 				84CC245F1E51E84800C75671 /* Main.storyboard */,
 				842FBC691E541CAD0050C525 /* CalculatorBrain.swift */,
+				F77D0FA91E87CE6500AE9102 /* GraphingView.swift */,
+				F7413F581E92C58900330208 /* GraphingViewController.swift */,
 				84CC246D1E51E94300C75671 /* Supporting Files */,
 			);
 			path = Calculator;
@@ -67,6 +78,7 @@
 		84CC246D1E51E94300C75671 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F77D0FAD1E8F959E00AE9102 /* loading_icon.png */,
 				84CC245B1E51E84800C75671 /* AppDelegate.swift */,
 				84CC24621E51E84800C75671 /* Assets.xcassets */,
 				84CC24641E51E84800C75671 /* LaunchScreen.storyboard */,
@@ -135,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84CC24661E51E84800C75671 /* LaunchScreen.storyboard in Resources */,
+				F77D0FAE1E8F959E00AE9102 /* loading_icon.png in Resources */,
 				84CC24631E51E84800C75671 /* Assets.xcassets in Resources */,
 				84CC24611E51E84800C75671 /* Main.storyboard in Resources */,
 			);
@@ -148,7 +161,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				842FBC6A1E541CAD0050C525 /* CalculatorBrain.swift in Sources */,
-				84CC245E1E51E84800C75671 /* ViewController.swift in Sources */,
+				F77D0FA81E87CDD900AE9102 /* AxesDrawer.swift in Sources */,
+				F7413F591E92C58900330208 /* GraphingViewController.swift in Sources */,
+				F77D0FAA1E87CE6500AE9102 /* GraphingView.swift in Sources */,
+				84CC245E1E51E84800C75671 /* CalculatorViewController.swift in Sources */,
 				84CC245C1E51E84800C75671 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
