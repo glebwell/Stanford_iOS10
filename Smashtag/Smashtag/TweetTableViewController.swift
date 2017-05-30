@@ -11,7 +11,11 @@ import Twitter
 
 class TweetTableViewController: UITableViewController {
 
-    private var tweets = [Array<Twitter.Tweet>]()
+    private var tweets = [Array<Twitter.Tweet>]() {
+        didSet {
+            print(tweets)
+        }
+    }
 
     var searchText: String? {
         didSet {
@@ -22,8 +26,25 @@ class TweetTableViewController: UITableViewController {
         }
     }
 
-    private func searchForTweets() {
+    private func twitterRequest() -> Twitter.Request? {
+        if let query = searchText, !query.isEmpty {
+            return Twitter.Request(search: query, count: 100)
+        }
+        return nil
+    }
 
+    private var lastTwitterRequest: Twitter.Request?
+
+    private func searchForTweets() {
+        if let request = twitterRequest() {
+            lastTwitterRequest = request
+            request.fetchTweets { [weak self] newTweets in
+                if request == self?.lastTwitterRequest  {
+                    self?.tweets.insert(newTweets, at: 0)
+                    self?.tableView.insertSections([0], with: .fade)
+                }
+            }
+        }
     }
 
     override func viewDidLoad() {
