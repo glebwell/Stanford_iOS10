@@ -84,11 +84,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         if let tweetCell = cell as? TweetTableViewCell {
             tweetCell.tweet = tweet
         }
-        //cell.textLabel?.text = tweet.text
-        //cell.detailTextLabel?.text = tweet.user.name
-
-
-
         return cell
     }
 
