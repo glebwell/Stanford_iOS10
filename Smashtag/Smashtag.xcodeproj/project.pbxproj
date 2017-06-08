@@ -15,6 +15,8 @@
 		8428E2161EDD984000A531F3 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8428E2121EDD976500A531F3 /* Twitter.framework */; };
 		8428E2171EDD984000A531F3 /* Twitter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8428E2121EDD976500A531F3 /* Twitter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F75C61BF1EDDF39F00C1DB87 /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75C61BE1EDDF39F00C1DB87 /* TweetTableViewCell.swift */; };
+		F7FB8E7E1EE47680004121A9 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FB8E7D1EE47680004121A9 /* ImageTableViewCell.swift */; };
+		F7FB8E801EE47862004121A9 /* MentionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FB8E7F1EE47862004121A9 /* MentionsTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +43,8 @@
 		8428E2101EDD905500A531F3 /* TweetTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewController.swift; sourceTree = "<group>"; };
 		8428E2121EDD976500A531F3 /* Twitter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Twitter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F75C61BE1EDDF39F00C1DB87 /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
+		F7FB8E7D1EE47680004121A9 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
+		F7FB8E7F1EE47862004121A9 /* MentionsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MentionsTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,8 @@
 			children = (
 				8428E2101EDD905500A531F3 /* TweetTableViewController.swift */,
 				8428E1FC1EDD8DB300A531F3 /* Main.storyboard */,
+				F7FB8E7F1EE47862004121A9 /* MentionsTableViewController.swift */,
+				F7FB8E7D1EE47680004121A9 /* ImageTableViewCell.swift */,
 				F75C61BE1EDDF39F00C1DB87 /* TweetTableViewCell.swift */,
 				8428E2041EDD8DB300A531F3 /* Info.plist */,
 				8428E20B1EDD8E3F00A531F3 /* Supporting Files */,
@@ -168,8 +174,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8428E1F91EDD8DB300A531F3 /* AppDelegate.swift in Sources */,
+				F7FB8E7E1EE47680004121A9 /* ImageTableViewCell.swift in Sources */,
 				8428E2111EDD905500A531F3 /* TweetTableViewController.swift in Sources */,
 				F75C61BF1EDDF39F00C1DB87 /* TweetTableViewCell.swift in Sources */,
+				F7FB8E801EE47862004121A9 /* MentionsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
