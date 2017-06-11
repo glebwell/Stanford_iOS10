@@ -11,22 +11,65 @@ import Twitter
 
 class MentionsTableViewController: UITableViewController {
 
-    private var mediaItems = Array<Twitter.MediaItem>()
-    private var mentions = [Array<Twitter.Mention>?]()
-
-
     var tweet: Twitter.Tweet? {
         didSet {
-            mediaItems = tweet?.media ?? []
-            mentions.insert(tweet?.hashtags, at: 0)
-            mentions.insert(tweet?.userMentions, at: 1)
+            title = tweet?.user.screenName
+            if tweet != nil {
+                mentionSections = initMentionSections(from: tweet!)
+            }
             tableView?.reloadData()
         }
     }
 
+    private enum MentionItem {
+        case keyword(String)
+        case image(URL, Double)
+    }
 
-    private let sectionNames = [0: "Images", 1: "Hashtags", 2: "Users"]
-    //private let cellTypesMap
+    private struct MentionSection {
+        var type: String
+        var mentions: [MentionItem]
+    }
+
+    private var mentionSections: [MentionSection] = []
+
+    private func initMentionSections(from tweet: Twitter.Tweet) -> [MentionSection] {
+        var mentionSections = [MentionSection]()
+
+        if tweet.media.count > 0 {
+            mentionSections.append(MentionSection(type: SectionNames.images,
+                                                  mentions: tweet.media.map { MentionItem.image($0.url, $0.aspectRatio) }))
+        }
+
+        if tweet.hashtags.count > 0 {
+            mentionSections.append(MentionSection(type: SectionNames.hashtags,
+                                                  mentions: tweet.hashtags.map { MentionItem.keyword($0.keyword) }))
+        }
+
+        if tweet.urls.count > 0 {
+            mentionSections.append(MentionSection(type: SectionNames.urls,
+                                                  mentions: tweet.urls.map { MentionItem.keyword($0.keyword) }))
+        }
+
+        if tweet.userMentions.count > 0 {
+            mentionSections.append(MentionSection(type: SectionNames.users,
+                                                  mentions: tweet.userMentions.map { MentionItem.keyword($0.keyword) }))
+        }
+
+        return mentionSections
+    }
+
+    private struct SectionNames {
+        static let images = "Images"
+        static let hashtags = "Hashtags"
+        static let users = "Users"
+        static let urls = "URLs"
+    }
+
+    private struct CellId {
+        static let image = "ImageCell"
+        static let text = "TextCell"
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,59 +80,43 @@ class MentionsTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return sectionNames.count
+        return mentionSections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        let count: Int
-        if section == 0 {
-            count = mediaItems.count
-        } else {
-            if let specificMentions = mentions[section - 1] {
-                count = specificMentions.count
-            } else {
-                count = 0
-            }
-
-        }
-        return count
+        return mentionSections[section].mentions.count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionNames[section]
+        return mentionSections[section].type
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = indexPath.section == 0 ? "ImageCell" : "TextCell"
+        let identifier = indexPath.section == 0 ? CellId.image : CellId.text
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        let mention = mentionSections[indexPath.section].mentions[indexPath.row]
 
-        if let imageCell = cell as? ImageTableViewCell {
-            if !mediaItems.isEmpty && indexPath.row < mediaItems.count {
-                let item = mediaItems[indexPath.row]
-                imageCell.imageView?.image = getImage(from: item.url)
+        switch mention {
+        case .image(let url, _):
+            if let imageCell = cell as? ImageTableViewCell {
+                imageCell.imageUrl = url
             }
-        } else {
-            print("section: \(indexPath.section); row: \(indexPath.row)")
-            let ar = mentions[indexPath.section - 1]
-            let data = ar?[indexPath.row]
-            cell.textLabel?.text = data?.keyword
+        case .keyword(let keyword):
+            cell.textLabel?.text = keyword
         }
         return cell
     }
 
-    private func getImage(from url: URL) -> UIImage? {
-        var image: UIImage?
-        DispatchQueue.global(qos: .userInitiated).sync {
-            let oldUrl = url
-            if let imageData = try? Data(contentsOf: url), url == oldUrl {
-                image = UIImage(data: imageData)
-            }
-        }
-        return image
-    }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let mention = mentionSections[indexPath.section].mentions[indexPath.row]
 
+        switch mention {
+        case .image(_, let aspectRatio):
+            return tableView.bounds.width / CGFloat(aspectRatio)
+        default:
+            return UITableViewAutomaticDimension
+        }
+    }
 
     /*
     // Override to support conditional editing of the table view.
