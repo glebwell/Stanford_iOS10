@@ -104,10 +104,10 @@
             </objects>
             <point key="canvasLocation" x="-527.20000000000005" y="-145.27736131934034"/>
         </scene>
-        <!--Mentions Table View Controller-->
+        <!--Mentions-->
         <scene sceneID="0y7-y6-fhM">
             <objects>
-                <tableViewController id="YiT-p0-JM2" customClass="MentionsTableViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Mentions" id="YiT-p0-JM2" customClass="MentionsTableViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="321" sectionHeaderHeight="28" sectionFooterHeight="28" id="sfS-WB-Ssd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -117,7 +117,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="300"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2S1-W3-0CM" id="6F9-fz-6HW">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="300"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="299"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Y0C-Jn-M0o">
@@ -131,16 +131,17 @@
                                     <constraints>
                                         <constraint firstAttribute="trailingMargin" secondItem="Y0C-Jn-M0o" secondAttribute="trailing" id="4Fr-wM-l5j"/>
                                         <constraint firstItem="Y0C-Jn-M0o" firstAttribute="leading" secondItem="6F9-fz-6HW" secondAttribute="leadingMargin" id="7y0-r6-pL1"/>
+                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerX" secondItem="Y0C-Jn-M0o" secondAttribute="centerX" id="GJW-mi-kTe"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="Y0C-Jn-M0o" secondAttribute="bottom" id="HJ1-2E-YGu"/>
+                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerY" secondItem="Y0C-Jn-M0o" secondAttribute="centerY" id="Kyj-Wn-ljC"/>
                                         <constraint firstItem="Y0C-Jn-M0o" firstAttribute="top" secondItem="6F9-fz-6HW" secondAttribute="topMargin" id="Oe7-dD-ZUj"/>
-                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerY" secondItem="6F9-fz-6HW" secondAttribute="centerY" id="hW5-DC-nV8"/>
-                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerX" secondItem="Y0C-Jn-M0o" secondAttribute="centerX" id="o5b-sb-zRI"/>
-                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerY" secondItem="Y0C-Jn-M0o" secondAttribute="centerY" id="uhm-Gs-VlL"/>
+                                        <constraint firstItem="mkH-1J-EiB" firstAttribute="centerY" secondItem="6F9-fz-6HW" secondAttribute="centerY" id="dYJ-Hg-8B8"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="spinner" destination="mkH-1J-EiB" id="KGe-hc-jxI"/>
                                     <outlet property="tweetImage" destination="Y0C-Jn-M0o" id="LcW-ug-J53"/>
+                                    <segue destination="Xsh-Ch-Yap" kind="show" identifier="ShowImage" id="afX-OL-ZYt"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TextCell" textLabel="Ecj-uZ-ntN" rowHeight="29" style="IBUITableViewCellStyleDefault" id="F6f-Da-sMe" customClass="ImageTableViewCell" customModule="Smashtag" customModuleProvider="target">
@@ -159,6 +160,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="eVr-8d-CmW" kind="show" identifier="Search" id="uUE-sN-icY"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -166,6 +170,7 @@
                             <outlet property="delegate" destination="YiT-p0-JM2" id="kUR-oZ-zSf"/>
                         </connections>
                     </tableView>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yix-tm-Dpy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -189,5 +194,47 @@
             </objects>
             <point key="canvasLocation" x="-1466.4000000000001" y="-145.27736131934034"/>
         </scene>
+        <!--Image View Controller-->
+        <scene sceneID="Xhh-b8-igU">
+            <objects>
+                <viewController id="Xsh-Ch-Yap" customClass="ImageViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eJo-x8-rYj"/>
+                        <viewControllerLayoutGuide type="bottom" id="dbT-JJ-nyC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="wzO-V6-SV5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nRR-DB-V2x">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </scrollView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3JL-NR-Qhf">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="nRR-DB-V2x" firstAttribute="leading" secondItem="wzO-V6-SV5" secondAttribute="leading" id="013-x2-v9o"/>
+                            <constraint firstItem="nRR-DB-V2x" firstAttribute="bottom" secondItem="dbT-JJ-nyC" secondAttribute="top" id="D0m-sd-f2K"/>
+                            <constraint firstItem="nRR-DB-V2x" firstAttribute="top" secondItem="wzO-V6-SV5" secondAttribute="top" id="P2P-NJ-Cc7"/>
+                            <constraint firstAttribute="trailing" secondItem="nRR-DB-V2x" secondAttribute="trailing" id="Vw5-5m-nWW"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Smm-zw-lPz"/>
+                    <connections>
+                        <outlet property="scrollView" destination="nRR-DB-V2x" id="DeG-qR-yzf"/>
+                        <outlet property="spinner" destination="3JL-NR-Qhf" id="LNO-T6-Zrf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tnm-W7-Kiq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="986" y="-145"/>
+        </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="uUE-sN-icY"/>
+    </inferredMetricsTieBreakers>
 </document>

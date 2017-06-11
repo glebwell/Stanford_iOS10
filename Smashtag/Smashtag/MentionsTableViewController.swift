@@ -8,6 +8,7 @@
 
 import UIKit
 import Twitter
+import SafariServices
 
 class MentionsTableViewController: UITableViewController {
 
@@ -58,23 +59,9 @@ class MentionsTableViewController: UITableViewController {
 
         return mentionSections
     }
-
-    private struct SectionNames {
-        static let images = "Images"
-        static let hashtags = "Hashtags"
-        static let users = "Users"
-        static let urls = "URLs"
-    }
-
-    private struct CellId {
-        static let image = "ImageCell"
-        static let text = "TextCell"
-    }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.estimatedRowHeight = 500
-        //tableView.rowHeight = UITableViewAutomaticDimension
     }
 
     // MARK: - Table view data source
@@ -118,49 +105,64 @@ class MentionsTableViewController: UITableViewController {
         }
     }
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    // MARK: - Constants
+
+    private struct SectionNames {
+        static let images = "Images"
+        static let hashtags = "Hashtags"
+        static let users = "Users"
+        static let urls = "URLs"
     }
-    */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    private struct CellId {
+        static let image = "ImageCell"
+        static let text = "TextCell"
     }
-    */
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    private struct SegueId {
+        static let search = "Search"
+        static let showImage = "ShowImage"
     }
-    */
 
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    private func isSearchSegueId(_ id: String?) -> Bool {
+        return (id != nil) && (id == SegueId.search)
     }
-    */
 
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if isSearchSegueId(identifier),
+            let cell = sender as? UITableViewCell,
+            let indexPath = tableView?.indexPath(for: cell),
+            mentionSections[indexPath.section].type == SectionNames.urls {
+            if let stringUrl = cell.textLabel?.text,
+                let url = URL(string: stringUrl) {
+                let safariVC = SFSafariViewController(url: url)
+                present(safariVC, animated: true, completion: nil)
+                return false
+            }
+        }
+        return true
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let id = segue.identifier {
+            if let cell = sender as? UITableViewCell {
+                switch id {
+                case SegueId.search:
+                    if let dvc = segue.destination as? TweetTableViewController,
+                        let cellText = cell.textLabel?.text {
+                        dvc.searchText = cellText
+                    }
+                case SegueId.showImage:
+                    if let imageCell = cell as? ImageTableViewCell,
+                        let dvc = segue.destination as? ImageViewController {
+                        dvc.image = imageCell.tweetImage?.image
+                    }
+                default:
+                    break
+                }
+            }
+        }
+    }
 }
