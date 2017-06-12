@@ -38,6 +38,8 @@ class ImageViewController: UIViewController
             // now that we've set an image
             // stop any spinner that exists from spinning
             spinner?.stopAnimating()
+            autoZoomed = true
+            zoomScaleToFit()
         }
     }
     // when we dropped this spinner into our storyboard
@@ -82,6 +84,11 @@ class ImageViewController: UIViewController
             fetchImage()  // fetch image
         }
     }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        zoomScaleToFit()
+    }
     
     // MARK: User Interface
 
@@ -99,6 +106,20 @@ class ImageViewController: UIViewController
     }
     
     fileprivate var imageView = UIImageView()
+    fileprivate var autoZoomed = true
+
+    private func zoomScaleToFit() {
+        if autoZoomed {
+            if let sv = scrollView, image != nil && (imageView.bounds.size.width > 0) && (scrollView.bounds.size.width > 0) {
+
+                let widthRatio = sv.bounds.width / imageView.bounds.size.width
+                let heigthRatio = scrollView.bounds.size.height / imageView.bounds.size.height
+                sv.zoomScale = (widthRatio > heigthRatio) ? widthRatio : heigthRatio
+                sv.contentOffset = CGPoint(x: (imageView.frame.size.width - sv.frame.size.width) / 2,
+                                           y: (imageView.frame.size.height - sv.frame.size.height) / 2)
+            }
+        }
+    }
 }
 
 // MARK: UIScrollViewDelegate
@@ -110,5 +131,9 @@ extension ImageViewController : UIScrollViewDelegate
 {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
+    }
+
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        autoZoomed = false
     }
 }

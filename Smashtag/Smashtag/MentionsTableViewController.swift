@@ -59,7 +59,7 @@ class MentionsTableViewController: UITableViewController {
 
         return mentionSections
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -79,7 +79,9 @@ class MentionsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = indexPath.section == 0 ? CellId.image : CellId.text
+        let mentionType = mentionSections[indexPath.section].type
+        let identifier = mentionType == SectionNames.images ? CellId.image : CellId.text
+
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         let mention = mentionSections[indexPath.section].mentions[indexPath.row]
 
@@ -126,12 +128,8 @@ class MentionsTableViewController: UITableViewController {
 
     // MARK: - Navigation
 
-    private func isSearchSegueId(_ id: String?) -> Bool {
-        return (id != nil) && (id == SegueId.search)
-    }
-
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if isSearchSegueId(identifier),
+        if identifier == SegueId.search,
             let cell = sender as? UITableViewCell,
             let indexPath = tableView?.indexPath(for: cell),
             mentionSections[indexPath.section].type == SectionNames.urls {
@@ -158,6 +156,7 @@ class MentionsTableViewController: UITableViewController {
                     if let imageCell = cell as? ImageTableViewCell,
                         let dvc = segue.destination as? ImageViewController {
                         dvc.image = imageCell.tweetImage?.image
+                        dvc.title = title
                     }
                 default:
                     break
