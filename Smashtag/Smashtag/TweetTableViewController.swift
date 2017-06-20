@@ -17,10 +17,14 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         didSet {
             searchTextField?.text = searchText
             searchTextField?.resignFirstResponder()
+            lastTwitterRequest = nil
             tweets.removeAll()
             tableView.reloadData()
             searchForTweets()
             title = searchText
+            if let term = searchText {
+                RecentSearches.add(term)
+            }
         }
     }
 
@@ -51,6 +55,13 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         super.viewDidLoad()
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+
+        if searchText == nil, let searchLast = RecentSearches.searches.first {
+            searchText = searchLast
+        } else {
+            searchTextField?.text = searchText
+            searchTextField?.resignFirstResponder()
+        }
     }
 
     @IBOutlet weak var searchTextField: UITextField! {
