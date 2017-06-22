@@ -37,24 +37,30 @@ class MentionsTableViewController: UITableViewController {
     private func initMentionSections(from tweet: Twitter.Tweet) -> [MentionSection] {
         var mentionSections = [MentionSection]()
 
-        if tweet.media.count > 0 {
+        if !tweet.media.isEmpty {
             mentionSections.append(MentionSection(type: SectionNames.images,
                                                   mentions: tweet.media.map { MentionItem.image($0.url, $0.aspectRatio) }))
         }
 
-        if tweet.hashtags.count > 0 {
+        if !tweet.hashtags.isEmpty {
             mentionSections.append(MentionSection(type: SectionNames.hashtags,
                                                   mentions: tweet.hashtags.map { MentionItem.keyword($0.keyword) }))
         }
 
-        if tweet.urls.count > 0 {
+        if !tweet.urls.isEmpty {
             mentionSections.append(MentionSection(type: SectionNames.urls,
                                                   mentions: tweet.urls.map { MentionItem.keyword($0.keyword) }))
         }
 
-        if tweet.userMentions.count > 0 {
-            mentionSections.append(MentionSection(type: SectionNames.users,
-                                                  mentions: tweet.userMentions.map { MentionItem.keyword($0.keyword) }))
+        var userItems = [MentionItem]()
+        userItems.append(MentionItem.keyword("@" + tweet.user.screenName)) // extra credit 1
+
+        if !tweet.userMentions.isEmpty {
+            userItems += tweet.userMentions.map { MentionItem.keyword($0.keyword) }
+        }
+
+        if !userItems.isEmpty {
+            mentionSections.append(MentionSection(type: SectionNames.users, mentions: userItems))
         }
 
         return mentionSections
@@ -149,7 +155,10 @@ class MentionsTableViewController: UITableViewController {
                 switch id {
                 case SegueId.search:
                     if let dvc = segue.destination as? TweetTableViewController,
-                        let cellText = cell.textLabel?.text {
+                        var cellText = cell.textLabel?.text {
+                        if cellText.hasPrefix("@") {
+                            cellText += " OR from:" + cellText
+                        }
                         dvc.searchText = cellText
                     }
                 case SegueId.showImage:
