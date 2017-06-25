@@ -109,7 +109,7 @@
             <objects>
                 <tableViewController title="Mentions" id="YiT-p0-JM2" customClass="MentionsTableViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="321" sectionHeaderHeight="28" sectionFooterHeight="28" id="sfS-WB-Ssd">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -177,10 +177,14 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="2vK-0O-ug6" kind="show" identifier="ShowURL" id="aTc-6l-dtu"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yix-tm-Dpy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="522" y="-145"/>
+            <point key="canvasLocation" x="489" y="-145"/>
         </scene>
         <!--Recents-->
         <scene sceneID="CQx-Gg-VMX">
@@ -222,6 +226,53 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7hF-PD-z1E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-562" y="649"/>
+        </scene>
+        <!--Web View-->
+        <scene sceneID="hfJ-uh-BAg">
+            <objects>
+                <viewController title="Web View" id="2vK-0O-ug6" customClass="WebViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="XOC-2W-tO0"/>
+                        <viewControllerLayoutGuide type="bottom" id="uzg-FC-CP0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mTX-qG-Tfq">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0AG-97-Ok8">
+                                <rect key="frame" x="16" y="72" width="343" height="587"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </webView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Vwr-Zj-8ni">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                                <color key="color" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vwr-Zj-8ni" firstAttribute="centerY" secondItem="mTX-qG-Tfq" secondAttribute="centerY" id="08z-HU-2D8"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="0AG-97-Ok8" secondAttribute="leading" id="5Nk-ao-DsZ"/>
+                            <constraint firstItem="uzg-FC-CP0" firstAttribute="top" secondItem="0AG-97-Ok8" secondAttribute="bottom" constant="8" symbolic="YES" id="8se-b6-TOI"/>
+                            <constraint firstItem="0AG-97-Ok8" firstAttribute="top" secondItem="XOC-2W-tO0" secondAttribute="bottom" constant="8" symbolic="YES" id="Ion-Le-ecZ"/>
+                            <constraint firstItem="Vwr-Zj-8ni" firstAttribute="centerX" secondItem="0AG-97-Ok8" secondAttribute="centerX" id="lfu-1i-flj"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0AG-97-Ok8" secondAttribute="trailing" id="vn4-if-ble"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Web View" id="mhN-dQ-ldO">
+                        <barButtonItem key="rightBarButtonItem" systemItem="stop" id="jTX-38-aAZ">
+                            <connections>
+                                <action selector="toRootViewController:" destination="2vK-0O-ug6" id="44d-nN-Igw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="spinner" destination="Vwr-Zj-8ni" id="Lpx-Se-6vf"/>
+                        <outlet property="webView" destination="0AG-97-Ok8" id="cAP-5d-RE3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FvT-xD-fBB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="489" y="648"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="CCg-pv-6fP">
@@ -296,6 +347,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="scrollView" destination="nRR-DB-V2x" id="DeG-qR-yzf"/>
                         <outlet property="spinner" destination="3JL-NR-Qhf" id="LNO-T6-Zrf"/>
@@ -326,6 +378,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="uUE-sN-icY"/>
+        <segue reference="UJ3-lp-txY"/>
     </inferredMetricsTieBreakers>
 </document>

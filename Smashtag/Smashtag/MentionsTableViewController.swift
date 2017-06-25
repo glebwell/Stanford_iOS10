@@ -133,6 +133,7 @@ class MentionsTableViewController: UITableViewController {
     private struct SegueId {
         static let search = "Search"
         static let showImage = "ShowImage"
+        static let showWebPage = "ShowURL"
     }
 
     // MARK: - Navigation
@@ -142,14 +143,16 @@ class MentionsTableViewController: UITableViewController {
             let cell = sender as? UITableViewCell,
             let indexPath = tableView?.indexPath(for: cell),
             mentionSections[indexPath.section].type == SectionNames.urls {
-            if let stringUrl = cell.textLabel?.text,
-                let url = URL(string: stringUrl) {
-                let safariVC = SFSafariViewController(url: url)
-                present(safariVC, animated: true, completion: nil)
-                return false
-            }
+            /*if let stringUrl = cell.textLabel?.text ,
+             let url = URL(string: stringUrl) {
+
+             let safariVC = SFSafariViewController(url: url)
+             present(safariVC, animated: true, completion: nil)
+             */
+            performSegue(withIdentifier: SegueId.showWebPage, sender: sender)
+            return false
         }
-        return true
+        return super.shouldPerformSegue(withIdentifier: identifier, sender: sender)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -169,6 +172,11 @@ class MentionsTableViewController: UITableViewController {
                         let dvc = segue.destination as? ImageViewController {
                         dvc.image = imageCell.tweetImage?.image
                         dvc.title = title
+                    }
+                case SegueId.showWebPage:
+                    if let dvc = segue.destination as? WebViewController,
+                        let cellText = cell.textLabel?.text {
+                        dvc.pageURL = URL(string: cellText)
                     }
                 default:
                     break
