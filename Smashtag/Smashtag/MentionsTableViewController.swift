@@ -12,6 +12,9 @@ import SafariServices
 
 class MentionsTableViewController: UITableViewController {
 
+    @IBAction func toRootViewController(_ sender: UIBarButtonItem) {
+        _ = navigationController?.popToRootViewController(animated: true)
+    }
     var tweet: Twitter.Tweet? {
         didSet {
             title = tweet?.user.screenName

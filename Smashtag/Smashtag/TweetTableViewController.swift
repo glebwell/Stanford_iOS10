@@ -12,7 +12,7 @@ import Twitter
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     private var tweets = [Array<Twitter.Tweet>]()
-    
+
     var searchText: String? {
         didSet {
             searchTextField?.text = searchText
@@ -62,6 +62,24 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             searchTextField?.text = searchText
             searchTextField?.resignFirstResponder()
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        createToRootViewControllerButton()
+    }
+
+    private func createToRootViewControllerButton() {
+        if let cntrls = navigationController?.viewControllers, cntrls.count > 2 {
+            if navigationItem.rightBarButtonItem == nil {
+                let item = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(toRootViewController))
+                navigationItem.setRightBarButton(item, animated: true)
+            }
+        }
+    }
+
+    func toRootViewController() {
+        _ = navigationController?.popToRootViewController(animated: true)
     }
 
     @IBOutlet weak var searchTextField: UITextField! {
@@ -123,5 +141,4 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             }
         }
     }
-
 }

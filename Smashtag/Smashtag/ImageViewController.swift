@@ -10,6 +10,10 @@ import UIKit
 
 class ImageViewController: UIViewController
 {
+    @IBAction func toRootViewController(_ sender: UIBarButtonItem) {
+        _ = navigationController?.popToRootViewController(animated: true)
+    }
+
     // MARK: Model
 
     var imageURL: URL? {
