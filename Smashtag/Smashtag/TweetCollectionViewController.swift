@@ -47,11 +47,17 @@ class TweetCollectionViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellId, for: indexPath)
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellId,
+                                                         for: indexPath) as? TweetCollectionViewCell {
+            if indexPath.row < images.count {
+                cell.imageUrl = images[indexPath.row].url
+                return cell
+            }
+        }
     
         // Configure the cell
     
-        return cell
+        return UICollectionViewCell()
     }
 
     // MARK: UICollectionViewDelegate

@@ -146,13 +146,21 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                 if let cell = sender as? TweetTableViewCell,
                     let indexPath = tableView?.indexPath(for: cell),
                     let dvc = segue.destination as? MentionsTableViewController {
-                        let tweet = tweets[indexPath.section][indexPath.row]
-                        dvc.tweet = tweet
+                    let tweet = tweets[indexPath.section][indexPath.row]
+                    dvc.tweet = tweet
                 }
             case Storyboard.collectionViewSegueId:
-                if let senderVC = sender as? TweetTableViewController,
-                    let dvc = segue.destination as? UICollectionViewController {
-                    // prepare
+                if let _ = sender as? TweetTableViewController,
+                    let dvc = segue.destination as? TweetCollectionViewController {
+                    var images = [MediaItem]()
+                    for tArray in tweets {
+                        //images += t.map {$0.media}
+                        for t in tArray {
+                            images += t.media
+                        }
+                    }
+                    dvc.images = images
+                    dvc.title = "Images: " + (searchText ?? "")
                 }
             default:
                 break
