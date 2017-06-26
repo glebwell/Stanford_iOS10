@@ -31,6 +31,24 @@ class WebViewController: UIViewController, UIWebViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if navigationItem.leftBarButtonItem == nil {
+            let bar = UIBarButtonItem(image: UIImage(named: "back"),
+                                      style: .plain,
+                                      target: self,
+                                      action: #selector(toRootViewControllerOrBack))
+
+            navigationItem.setLeftBarButton(bar, animated: true)
+        }
+
+    }
+
+    @objc private func toRootViewControllerOrBack(_ item: UIBarButtonItem) {
+        if let view = webView, view.canGoBack {
+            view.goBack()
+        } else {
+            toRootViewController(item)
+        }
     }
 
     // MARK: - UIWebViewDelegate

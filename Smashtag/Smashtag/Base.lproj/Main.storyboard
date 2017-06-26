@@ -199,11 +199,11 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sI0-SJ-D2I" id="GfH-oR-dI5">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tmN-5f-SFP">
-                                            <rect key="frame" x="15" y="0.0" width="345" height="69.5"/>
+                                            <rect key="frame" x="15" y="0.0" width="345" height="69"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -230,7 +230,7 @@
         <!--Web View-->
         <scene sceneID="hfJ-uh-BAg">
             <objects>
-                <viewController title="Web View" id="2vK-0O-ug6" customClass="WebViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Web View" automaticallyAdjustsScrollViewInsets="NO" id="2vK-0O-ug6" customClass="WebViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="XOC-2W-tO0"/>
                         <viewControllerLayoutGuide type="bottom" id="uzg-FC-CP0"/>
@@ -241,7 +241,7 @@
                         <subviews>
                             <webView contentMode="scaleToFill" scalesPageToFit="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0AG-97-Ok8">
                                 <rect key="frame" x="16" y="72" width="343" height="587"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </webView>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Vwr-Zj-8ni">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
@@ -378,6 +378,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="UJ3-lp-txY"/>
+        <segue reference="qX4-j8-8s5"/>
     </inferredMetricsTieBreakers>
 </document>
