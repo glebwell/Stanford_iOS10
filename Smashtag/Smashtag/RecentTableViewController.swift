@@ -40,7 +40,7 @@ class RecentTableViewController: UITableViewController {
         return cell
     }
 
-    // Edit tableView
+    // Extra credit 5
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCellEditingStyle,
                             forRowAt indexPath: IndexPath) {

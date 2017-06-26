@@ -12,7 +12,12 @@ import Twitter
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     private var tweets = [Array<Twitter.Tweet>]()
-
+    private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
+                                                                       target: self,
+                                                                       action: #selector(toRootViewController))
+    private lazy var imagesCollectionButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera,
+                                                                               target: self,
+                                                                               action: #selector(showCollectionView))
     var searchText: String? {
         didSet {
             searchTextField?.text = searchText
@@ -66,19 +71,26 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        createToRootViewControllerButton()
+        configureBarButtonItems()
     }
 
-    private func createToRootViewControllerButton() {
+    private func configureBarButtonItems() {
         if let cntrls = navigationController?.viewControllers, cntrls.count > 2 {
+            if navigationItem.rightBarButtonItem != toRootVCButton {
+                navigationItem.setRightBarButton(toRootVCButton, animated: true)
+            }
+        } else {
             if navigationItem.rightBarButtonItem == nil {
-                let item = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(toRootViewController))
-                navigationItem.setRightBarButton(item, animated: true)
+                navigationItem.setRightBarButton(imagesCollectionButton, animated: true)
             }
         }
     }
 
-    func toRootViewController() {
+    @objc private func showCollectionView() {
+        performSegue(withIdentifier: Storyboard.collectionViewSegueId, sender: self)
+    }
+
+    @objc private func toRootViewController() {
         _ = navigationController?.popToRootViewController(animated: true)
     }
 
@@ -120,6 +132,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     // MARK: - Constants
     private struct Storyboard {
         static let mentionsIdentifier = "ShowTweetMentions"
+        static let collectionViewSegueId = "ShowCollectionView"
     }
 
 
@@ -135,6 +148,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                     let dvc = segue.destination as? MentionsTableViewController {
                         let tweet = tweets[indexPath.section][indexPath.row]
                         dvc.tweet = tweet
+                }
+            case Storyboard.collectionViewSegueId:
+                if let senderVC = sender as? TweetTableViewController,
+                    let dvc = segue.destination as? UICollectionViewController {
+                    // prepare
                 }
             default:
                 break
