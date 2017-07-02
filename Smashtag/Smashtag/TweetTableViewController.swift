@@ -11,13 +11,8 @@ import Twitter
 
 class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
-    private var tweets = [Array<Twitter.Tweet>]()
-    private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
-                                                                       target: self,
-                                                                       action: #selector(toRootViewController))
-    private lazy var imagesCollectionButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera,
-                                                                               target: self,
-                                                                               action: #selector(showCollectionView))
+    // MARK: - Public
+
     var searchText: String? {
         didSet {
             searchTextField?.text = searchText
@@ -32,6 +27,63 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             }
         }
     }
+
+    var newTweets = Array<Twitter.Tweet>() {
+        didSet {
+            if !newTweets.isEmpty {
+                tweets.insert(newTweets, at: 0)
+                tableView?.insertSections([0], with: .fade)
+            }
+        }
+    }
+
+    // MARK: - UITextFieldDelegate
+
+    @IBOutlet weak var searchTextField: UITextField! {
+        didSet {
+            searchTextField.delegate = self
+        }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == searchTextField {
+            searchText = searchTextField?.text
+        }
+        return true
+    }
+
+    // MARK: - Lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.estimatedRowHeight = tableView.rowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+
+        if tweets.isEmpty {
+            if searchText == nil, let searchLast = RecentSearches.searches.first {
+                searchText = searchLast
+            }
+        }
+        else {
+            searchTextField?.text = searchText
+            searchTextField?.resignFirstResponder()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureBarButtonItems()
+    }
+
+    // MARK: - Private
+
+    private var tweets = [Array<Twitter.Tweet>]()
+    private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
+                                                                       target: self,
+                                                                       action: #selector(toRootViewController))
+    private lazy var imagesCollectionButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera,
+                                                                               target: self,
+                                                                               action: #selector(showCollectionView))
 
     private func twitterRequest() -> Twitter.Request? {
         if let query = searchText, !query.isEmpty {
@@ -56,28 +108,17 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.estimatedRowHeight = tableView.rowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
-
-        if searchText == nil, let searchLast = RecentSearches.searches.first {
-            searchText = searchLast
-        } else {
-            searchTextField?.text = searchText
-            searchTextField?.resignFirstResponder()
-        }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        configureBarButtonItems()
-    }
-
     private func configureBarButtonItems() {
-        if let cntrls = navigationController?.viewControllers, cntrls.count > 2 {
+        if let cntrls = navigationController?.viewControllers, cntrls.count >= 2 {
+            /*
             if navigationItem.rightBarButtonItem != toRootVCButton {
                 navigationItem.setRightBarButton(toRootVCButton, animated: true)
+            }
+            */
+            let items = navigationItem.rightBarButtonItems
+            if items == nil || items!.count < 2 {
+                imagesCollectionButton.isEnabled = false
+                navigationItem.setRightBarButtonItems([toRootVCButton, imagesCollectionButton], animated: true)
             }
         } else {
             if navigationItem.rightBarButtonItem == nil {
@@ -92,19 +133,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     @objc private func toRootViewController() {
         _ = navigationController?.popToRootViewController(animated: true)
-    }
-
-    @IBOutlet weak var searchTextField: UITextField! {
-        didSet {
-            searchTextField.delegate = self
-        }
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == searchTextField {
-            searchText = searchTextField?.text
-        }
-        return true
     }
 
     // MARK: - Table view data source
@@ -128,6 +156,13 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.last {
+            if indexPath == lastVisibleIndexPath {
+                imagesCollectionButton.isEnabled = true
+            }
+        }
+    }
 
     // MARK: - Constants
     private struct Storyboard {
@@ -152,14 +187,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             case Storyboard.collectionViewSegueId:
                 if let _ = sender as? TweetTableViewController,
                     let dvc = segue.destination as? TweetCollectionViewController {
-                    var images = [MediaItem]()
-                    for tArray in tweets {
-                        //images += t.map {$0.media}
-                        for t in tArray {
-                            images += t.media
-                        }
-                    }
-                    dvc.images = images
+                    dvc.tweets = tweets
                     dvc.title = "Images: " + (searchText ?? "")
                 }
             default:

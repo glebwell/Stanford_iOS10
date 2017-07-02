@@ -14,7 +14,7 @@
         <scene sceneID="oYO-H1-nrz">
             <objects>
                 <tableViewController id="eVr-8d-CmW" customClass="TweetTableViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="96" sectionHeaderHeight="28" sectionFooterHeight="28" id="3ZS-Xx-ZRv">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="96" sectionHeaderHeight="28" sectionFooterHeight="28" id="3ZS-Xx-ZRv">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -30,7 +30,7 @@
                                 <rect key="frame" x="0.0" y="58" width="375" height="96"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="r0P-3T-lbS" id="ICx-na-vAW">
-                                    <rect key="frame" x="0.0" y="0.0" width="342" height="95.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="96"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="m4x-tg-9Mu">
@@ -279,34 +279,32 @@
         <scene sceneID="Vlx-LZ-Eqa">
             <objects>
                 <collectionViewController title="Images" id="PF9-4z-W3Z" customClass="TweetCollectionViewController" customModule="Smashtag" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="6c2-Z2-siZ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="6c2-Z2-siZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6yW-y3-z6P">
-                            <size key="itemSize" width="219" height="234"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="6yW-y3-z6P">
+                            <size key="itemSize" width="120" height="120"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="sectionInset" minX="1" minY="1" maxX="1" maxY="1"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="CollectionCell" id="msB-0L-hcQ" customClass="TweetCollectionViewCell" customModule="Smashtag" customModuleProvider="target">
-                                <rect key="frame" x="78" y="0.0" width="219" height="234"/>
+                                <rect key="frame" x="1" y="1" width="120" height="120"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="219" height="234"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uAi-Uf-7q7">
-                                            <rect key="frame" x="8" y="8" width="203" height="218"/>
+                                            <rect key="frame" x="8" y="8" width="104" height="104"/>
                                         </imageView>
                                         <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="zMd-Zc-jez">
-                                            <rect key="frame" x="91" y="99" width="37" height="37"/>
+                                            <rect key="frame" x="42" y="42" width="37" height="37"/>
                                             <color key="color" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         </activityIndicatorView>
                                     </subviews>
                                 </view>
-                                <color key="backgroundColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="trailingMargin" secondItem="uAi-Uf-7q7" secondAttribute="trailing" id="KSX-g5-3Ig"/>
                                     <constraint firstItem="zMd-Zc-jez" firstAttribute="centerX" secondItem="uAi-Uf-7q7" secondAttribute="centerX" id="bgD-Mu-Hob"/>
@@ -318,6 +316,7 @@
                                 <connections>
                                     <outlet property="spinner" destination="zMd-Zc-jez" id="SDP-ZN-6YK"/>
                                     <outlet property="tweetImageView" destination="uAi-Uf-7q7" id="pfQ-9B-CqX"/>
+                                    <segue destination="eVr-8d-CmW" kind="show" identifier="ShowTweets" id="Suh-ez-x5m"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -326,6 +325,7 @@
                             <outlet property="delegate" destination="PF9-4z-W3Z" id="h00-ho-RTb"/>
                         </connections>
                     </collectionView>
+                    <nil key="simulatedBottomBarMetrics"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ctJ-kU-xw2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -435,6 +435,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="qX4-j8-8s5"/>
+        <segue reference="Suh-ez-x5m"/>
     </inferredMetricsTieBreakers>
 </document>
