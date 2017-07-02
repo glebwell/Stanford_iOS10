@@ -19,6 +19,7 @@
 		84F0E1101F012E020079A34A /* TweetCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F0E10F1F012E020079A34A /* TweetCollectionViewController.swift */; };
 		84F0E1121F0141450079A34A /* TweetCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F0E1111F0141450079A34A /* TweetCollectionViewCell.swift */; };
 		F71589571EEDD7BE00B8BCBC /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71589561EEDD7BE00B8BCBC /* ImageViewController.swift */; };
+		F717CCAB1F096719009526B1 /* CHTCollectionViewWaterfallLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F717CCAA1F096719009526B1 /* CHTCollectionViewWaterfallLayout.swift */; };
 		F75C61BF1EDDF39F00C1DB87 /* TweetTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75C61BE1EDDF39F00C1DB87 /* TweetTableViewCell.swift */; };
 		F7ADF4111F000D58001587B5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7ADF4101F000D58001587B5 /* WebViewController.swift */; };
 		F7FB8E7E1EE47680004121A9 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7FB8E7D1EE47680004121A9 /* ImageTableViewCell.swift */; };
@@ -53,6 +54,7 @@
 		84F0E10F1F012E020079A34A /* TweetCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetCollectionViewController.swift; sourceTree = "<group>"; };
 		84F0E1111F0141450079A34A /* TweetCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetCollectionViewCell.swift; sourceTree = "<group>"; };
 		F71589561EEDD7BE00B8BCBC /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		F717CCAA1F096719009526B1 /* CHTCollectionViewWaterfallLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CHTCollectionViewWaterfallLayout.swift; sourceTree = "<group>"; };
 		F75C61BE1EDDF39F00C1DB87 /* TweetTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetTableViewCell.swift; sourceTree = "<group>"; };
 		F7ADF4101F000D58001587B5 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		F7FB8E7D1EE47680004121A9 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			children = (
 				8428E2101EDD905500A531F3 /* TweetTableViewController.swift */,
 				84F0E10F1F012E020079A34A /* TweetCollectionViewController.swift */,
+				F717CCAA1F096719009526B1 /* CHTCollectionViewWaterfallLayout.swift */,
 				84F0E10D1EF947D80079A34A /* RecentTableViewController.swift */,
 				84F0E10B1EF93C410079A34A /* RecentSearches.swift */,
 				8428E1FC1EDD8DB300A531F3 /* Main.storyboard */,
@@ -202,6 +205,7 @@
 				84F0E1121F0141450079A34A /* TweetCollectionViewCell.swift in Sources */,
 				84F0E1101F012E020079A34A /* TweetCollectionViewController.swift in Sources */,
 				F7FB8E801EE47862004121A9 /* MentionsTableViewController.swift in Sources */,
+				F717CCAB1F096719009526B1 /* CHTCollectionViewWaterfallLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -66,12 +66,16 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
 
     // MARK: - Constants
 
-    private struct FlowLayout {
+    fileprivate struct LayoutConstants {
         static let minImageCellWidth: CGFloat = 60
         static let itemsPerRow: CGFloat = 3
         static let minimumLineSpacing: CGFloat = 2
         static let minimumInteritemSpacing: CGFloat = 2
         static let sectionInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+
+        static let columnCountWaterfall = 3
+        static let maxColumnCountWaterfall = 8
+        static let minColumnCountWaterfall = 1
     }
 
     private struct Constants {
@@ -81,30 +85,35 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
 
     // MARK: - Private
 
-    private var images = [TweetMedia]()
+    fileprivate var images = [TweetMedia]()
+    private let layoutFlow = UICollectionViewFlowLayout()
+    private let layoutWaterfall = CHTCollectionViewWaterfallLayout()
 
     private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
                                                                        target: self,
                                                                        action: #selector(toRootViewController))
     private var predefinedWidth: CGFloat {
-        return floor((collectionView!.bounds.width - FlowLayout.minimumInteritemSpacing * (FlowLayout.itemsPerRow - 1.0) -
-        FlowLayout.sectionInsets.right - FlowLayout.sectionInsets.left) / FlowLayout.itemsPerRow)
+        return floor((collectionView!.bounds.width - LayoutConstants.minimumInteritemSpacing * (LayoutConstants.itemsPerRow - 1.0) -
+        LayoutConstants.sectionInsets.right - LayoutConstants.sectionInsets.left) / LayoutConstants.itemsPerRow)
     }
 
-    private var sizePredefined: CGSize { return CGSize(width: predefinedWidth, height: predefinedWidth) }
+    fileprivate var sizePredefined: CGSize { return CGSize(width: predefinedWidth, height: predefinedWidth) }
 
     @objc private func toRootViewController() {
         _ = navigationController?.popToRootViewController(animated: true)
     }
 
     private func setupLayout() {
-        let layoutFlow = UICollectionViewFlowLayout()
-        layoutFlow.minimumInteritemSpacing = FlowLayout.minimumInteritemSpacing
-        layoutFlow.minimumLineSpacing = FlowLayout.minimumLineSpacing
-        layoutFlow.sectionInset = FlowLayout.sectionInsets
+        layoutWaterfall.columnCount = LayoutConstants.columnCountWaterfall
+        layoutWaterfall.minimumColumnSpacing = LayoutConstants.minimumLineSpacing
+        layoutWaterfall.minimumInteritemSpacing = LayoutConstants.minimumInteritemSpacing
+
+        layoutFlow.minimumInteritemSpacing = LayoutConstants.minimumInteritemSpacing
+        layoutFlow.minimumLineSpacing = LayoutConstants.minimumLineSpacing
+        layoutFlow.sectionInset = LayoutConstants.sectionInsets
         layoutFlow.itemSize = sizePredefined
 
-        collectionView?.collectionViewLayout = layoutFlow
+        collectionView?.collectionViewLayout = layoutWaterfall
     }
 
     private func setupButtons() {
@@ -167,13 +176,13 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
         let predefinedSize = sizePredefined
 
         if let layoutFlow = collectionViewLayout as? UICollectionViewFlowLayout {
-            let maxCellWidth = collectionView.bounds.size.width - layoutFlow.minimumInteritemSpacing * (FlowLayout.itemsPerRow - 1) -
+            let maxCellWidth = collectionView.bounds.size.width - layoutFlow.minimumInteritemSpacing * (LayoutConstants.itemsPerRow - 1) -
                 layoutFlow.sectionInset.right - layoutFlow.sectionInset.left
             let defaultSize = layoutFlow.itemSize
 
             let scaledCellSize = CGSize(width: defaultSize.width * scale, height: defaultSize.height * scale)
             let cellWidth = min(max(scaledCellSize.width,
-                                    FlowLayout.minImageCellWidth), maxCellWidth)
+                                    LayoutConstants.minImageCellWidth), maxCellWidth)
 
             return CGSize(width: cellWidth, height: cellWidth / ratio)
 
@@ -188,5 +197,35 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
     override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         swap(&images[destinationIndexPath.row], &images[sourceIndexPath.row])
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+}
+
+
+extension TweetCollectionViewController: CHTCollectionViewDelegateWaterfallLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAtCHT indexPath: IndexPath) -> CGSize {
+
+        adjustWaterfallColumnCount(collectionView)
+        let ratio = CGFloat(images[indexPath.row].media.aspectRatio)
+        let predefinedSize = sizePredefined
+        var maxCellWidth = collectionView.bounds.size.width
+
+        if let layout = collectionViewLayout as? CHTCollectionViewWaterfallLayout {
+            maxCellWidth = maxCellWidth - layout.minimumInteritemSpacing * (LayoutConstants.itemsPerRow - 1) -
+                layout.sectionInset.left - layout.sectionInset.right
+        }
+
+        let scaledSize = CGSize(width: predefinedSize.width * scale, height: predefinedSize.height * scale)
+        let cellWidth = min(max(scaledSize.width, LayoutConstants.minImageCellWidth), maxCellWidth)
+        return CGSize(width: cellWidth, height: cellWidth / ratio)
+    }
+
+    private func adjustWaterfallColumnCount(_ collectionView: UICollectionView) {
+        if let waterfallLayout = collectionView.collectionViewLayout as? CHTCollectionViewWaterfallLayout {
+            let newColumnNumber = Int(CGFloat(LayoutConstants.columnCountWaterfall) / scale)
+            waterfallLayout.columnCount = min(max(newColumnNumber, LayoutConstants.minColumnCountWaterfall),
+                                                LayoutConstants.maxColumnCountWaterfall)
+        }
     }
 }
