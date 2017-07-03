@@ -81,9 +81,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
                                                                        target: self,
                                                                        action: #selector(toRootViewController))
-    private lazy var imagesCollectionButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .camera,
-                                                                               target: self,
-                                                                               action: #selector(showCollectionView))
+    private lazy var imagesCollectionButton: UIBarButtonItem =  {
+        let button = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(showCollectionView))
+        button.isEnabled = false
+        return button
+    }()
 
     private func twitterRequest() -> Twitter.Request? {
         if let query = searchText, !query.isEmpty {
@@ -117,7 +119,6 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
             */
             let items = navigationItem.rightBarButtonItems
             if items == nil || items!.count < 2 {
-                imagesCollectionButton.isEnabled = false
                 navigationItem.setRightBarButtonItems([toRootVCButton, imagesCollectionButton], animated: true)
             }
         } else {

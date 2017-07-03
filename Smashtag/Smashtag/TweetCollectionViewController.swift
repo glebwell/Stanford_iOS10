@@ -52,12 +52,26 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
         }
     }
 
+    @IBAction func changeLayout(_ sender: UIBarButtonItem) {
+        if let layout = collectionView?.collectionViewLayout {
+            let selectedLayout: UICollectionViewLayout
+            if layout is CHTCollectionViewWaterfallLayout {
+                selectedLayout = layoutFlow
+            } else {
+                selectedLayout = layoutWaterfall
+            }
+            collectionView?.setCollectionViewLayout(selectedLayout, animated: true)
+        }
+    }
+    
+    @IBAction func toRootViewController(_ sender: UIBarButtonItem) {
+        _ = navigationController?.popToRootViewController(animated: true)
+    }
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        setupButtons()
 
         collectionView?.addGestureRecognizer(UIPinchGestureRecognizer(target: self,
                                                                       action: #selector(zoom)))
@@ -89,19 +103,12 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
     private let layoutFlow = UICollectionViewFlowLayout()
     private let layoutWaterfall = CHTCollectionViewWaterfallLayout()
 
-    private lazy var toRootVCButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop,
-                                                                       target: self,
-                                                                       action: #selector(toRootViewController))
     private var predefinedWidth: CGFloat {
         return floor((collectionView!.bounds.width - LayoutConstants.minimumInteritemSpacing * (LayoutConstants.itemsPerRow - 1.0) -
         LayoutConstants.sectionInsets.right - LayoutConstants.sectionInsets.left) / LayoutConstants.itemsPerRow)
     }
 
     fileprivate var sizePredefined: CGSize { return CGSize(width: predefinedWidth, height: predefinedWidth) }
-
-    @objc private func toRootViewController() {
-        _ = navigationController?.popToRootViewController(animated: true)
-    }
 
     private func setupLayout() {
         layoutWaterfall.columnCount = LayoutConstants.columnCountWaterfall
@@ -114,12 +121,6 @@ class TweetCollectionViewController: UICollectionViewController, UICollectionVie
         layoutFlow.itemSize = sizePredefined
 
         collectionView?.collectionViewLayout = layoutWaterfall
-    }
-
-    private func setupButtons() {
-        if navigationItem.rightBarButtonItems == nil {
-            navigationItem.setRightBarButton(toRootVCButton, animated: true)
-        }
     }
 
     @objc private func zoom(_ gesture: UIPinchGestureRecognizer) {
