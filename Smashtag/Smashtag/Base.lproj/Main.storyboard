@@ -97,7 +97,14 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="bip-er-CDh"/>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="jEE-R5-vja">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="refresh:" destination="eVr-8d-CmW" eventType="valueChanged" id="5Mh-j0-sn7"/>
+                        </connections>
+                    </refreshControl>
                     <connections>
+                        <outlet property="refreshCtrl" destination="jEE-R5-vja" id="ZCZ-PV-cpw"/>
                         <outlet property="searchTextField" destination="7Ga-Cc-NSg" id="dC6-JU-sgm"/>
                         <segue destination="PF9-4z-W3Z" kind="show" identifier="ShowCollectionView" id="pAN-8H-Zbq"/>
                     </connections>

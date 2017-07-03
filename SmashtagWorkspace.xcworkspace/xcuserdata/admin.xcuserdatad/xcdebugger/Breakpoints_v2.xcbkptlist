@@ -58,13 +58,77 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Smashtag/Smashtag/TweetTableViewController.swift"
-            timestampString = "520773581.742555"
+            timestampString = "520779833.736067"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "configureBarButtonItems()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Smashtag/Smashtag/TweetTableViewController.swift"
+            timestampString = "520780216.842825"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "searchForTweets()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Smashtag/Smashtag/TweetTableViewController.swift"
+            timestampString = "520780330.098805"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "twitterRequest()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Smashtag.TweetTableViewController.(twitterRequest in _F9DE7E52439C181DDC8F935082D6410C) () -&gt; Swift.Optional&lt;Twitter.Request&gt;"
+                  moduleName = "Smashtag"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Smashtag/Smashtag/TweetTableViewController.swift"
+                  timestampString = "520780330.104889"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "26">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Smashtag.TweetTableViewController.(twitterRequest in _F9DE7E52439C181DDC8F935082D6410C) () -&gt; Swift.Optional&lt;Twitter.Request&gt;"
+                  moduleName = "Smashtag"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/swift/development/Stanford_iOS10/Smashtag/Smashtag/TweetTableViewController.swift"
+                  timestampString = "520780330.110205"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "97"
+                  endingLineNumber = "97"
+                  offsetFromSymbolStart = "109">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
