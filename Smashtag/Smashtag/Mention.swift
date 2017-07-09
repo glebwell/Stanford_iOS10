@@ -17,27 +17,35 @@ class Mention: NSManagedObject {
         static let hashtag = "Hashtags"
     }
 
-    class func findOrCreateMention(matching keyword: String,
-                             searchTerm term: String,
-                             in context: NSManagedObjectContext) throws -> Mention {
+    class func findOrCreateMentions(matching keywords: [String],
+                                    searchTerm term: String,
+                                    in context: NSManagedObjectContext) throws -> [Mention] {
         let request: NSFetchRequest<Mention> = Mention.fetchRequest()
-        request.predicate = NSPredicate(format: "keyword = %@ AND searchTerm =[cd] %@", keyword, term)
+        request.predicate = NSPredicate(format: "(searchTerm =[cd] %@) AND (keyword IN %@)", term, keywords)
         do {
             let matches = try context.fetch(request)
-            if !matches.isEmpty {
-                assert(matches.count == 1, "[Tweet][findOrCreateMention] database inconsistency")
-                matches[0].count += 1 // increment use count
-                return matches[0]
+            for mention in matches { // increment use count for existed mentions
+                mention.count += 1
             }
+            let existedKeywords = matches.flatMap{ $0.keyword! }
+            let keywordsForCreation = keywords.filter{ !existedKeywords.contains($0) }
+
+            print("[Mention][findOrCreateMentions] find \(existedKeywords.count) existed mentions for searchTerm: \(term)")
+            print("[Mention][findOrCreateMentions] find \(keywordsForCreation.count) new mentions for searchTerm: \(term)")
+
+            var mentions = [Mention]()
+            for keyword in keywordsForCreation { // create new mention entities
+                let mention = Mention(context: context)
+                mention.keyword = keyword
+                mention.count = 1
+                mention.type = keyword.hasPrefix("#") ? MentionType.hashtag : MentionType.user
+                mention.searchTerm = term
+                mentions.append(mention)
+            }
+            return mentions
+            
         } catch {
             throw error
         }
-        
-        let mention = Mention(context: context)
-        mention.keyword = keyword
-        mention.count = 1
-        mention.type = keyword.hasPrefix("#") ? MentionType.hashtag : MentionType.user
-        mention.searchTerm = term
-        return mention
     }
 }
