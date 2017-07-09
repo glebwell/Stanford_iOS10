@@ -55,16 +55,27 @@ class RecentTableViewController: UITableViewController {
     private struct Storyboard {
         static let RecentCell = "RecentCell"
         static let TweetsSegue = "ShowTweets"
+        static let PopularitySegue = "ShowPopularity"
     }
 
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let id = segue.identifier,
-            id == Storyboard.TweetsSegue,
-            let cell = sender as? UITableViewCell,
-            let dvc = segue.destination as? TweetTableViewController {
-            dvc.searchText = cell.textLabel?.text
+            let cell = sender as? UITableViewCell {
+            switch id {
+            case Storyboard.TweetsSegue:
+                if let dvc = segue.destination as? TweetTableViewController {
+                    dvc.searchText = cell.textLabel?.text
+                }
+            case Storyboard.PopularitySegue:
+                if let dvc = segue.destination as? PopularityTableViewController {
+                    dvc.searchTerm = cell.textLabel?.text
+                    dvc.container = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer
+                }
+            default:
+                break
+            }
         }
     }
 }

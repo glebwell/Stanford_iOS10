@@ -22,24 +22,25 @@ class SmashTweetTableViewController: TweetTableViewController {
     }
 
     private func updateDatabase(with tweets: [Twitter.Tweet]) {
-        container?.performBackgroundTask { [weak self] context in
-            for twitterInfo in tweets {
-                _ = try? Tweet.findOrCreateTweet(matching: twitterInfo, in: context)
+        if let searchText = self.searchText {
+            container?.performBackgroundTask { [weak self] context in
+                for twitterInfo in tweets {
+                    _ = try? Tweet.findOrCreateTweet(matching: twitterInfo, searchTerm: searchText, in: context)
+                }
+                try? context.save()
+                self?.printDatabaseStatistics()
             }
-            try? context.save()
-            self?.printDatabaseStatistics()
         }
-
     }
 
     private func printDatabaseStatistics() {
         if let context = container?.viewContext {
             context.perform {
-                if let tweetCount = (try? context.fetch(Tweet.fetchRequest()))?.count {
+                if let tweetCount = try? context.count(for: Tweet.fetchRequest()) {
                     print("\(tweetCount) tweets")
                 }
-                if let tweeterCount = try? context.count(for: TwitterUser.fetchRequest()) {
-                    print("\(tweeterCount) Twitter users")
+                if let mentionsCount = try? context.count(for: Mention.fetchRequest()) {
+                    print("\(mentionsCount) mentions")
                 }
             }
         }
