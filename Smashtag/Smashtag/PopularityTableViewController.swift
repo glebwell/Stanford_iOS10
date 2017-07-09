@@ -64,8 +64,10 @@ class PopularityTableViewController: FetchedResultsTableViewController {
         if let id = segue.identifier,
             id == Constants.SearchTweetsSegue,
             let cell = sender as? UITableViewCell,
-            let dvc = segue.destination as? TweetTableViewController {
-            dvc.searchText = cell.textLabel?.text
+            let dvc = segue.destination as? TweetTableViewController,
+            let cellText = cell.textLabel?.text {
+            dvc.searchText = cellText
+            dvc.searchTextField?.text = cellText
         }
     }
 }
