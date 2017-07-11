@@ -48,4 +48,8 @@ class Mention: NSManagedObject {
             throw error
         }
     }
+
+    override func prepareForDeletion() {
+        print("prepare to deletion mention: \(self.keyword ?? "<?>")")
+    }
 }

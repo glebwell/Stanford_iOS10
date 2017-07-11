@@ -17,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        persistentContainer.performBackgroundTask { context in
+            print("[AppDelegate][application] Starting remove old tweets...")
+            try? Tweet.removeOldTweets(which: Date(timeIntervalSinceNow: TimeInterval(-60*60*24*7)), in: context)
+            print("[AppDelegate][application] Finish remove old tweets")
+        }
         return true
     }
 

@@ -45,4 +45,31 @@ class Tweet: NSManagedObject {
             throw error
         }
     }
+
+    class func removeOldTweets(which older: Date, in context: NSManagedObjectContext) throws {
+        let request: NSFetchRequest<Tweet> = Tweet.fetchRequest()
+        request.predicate = NSPredicate(format: "created < %@", older as CVarArg)
+        do {
+            let matches = try context.fetch(request)
+            for tweet in matches {
+                context.delete(tweet)
+            }
+            print("[Tweet][removeOldTweets] Removed \(matches.count) tweets")
+        } catch {
+            throw error
+        }
+    }
+
+    override func prepareForDeletion() {
+        print("prepare to deletion tweet: \(self.unique ?? "<?>")")
+        if let mentionsSet = mentions as? Set<Mention> {
+            for mention in mentionsSet {
+                mention.removeFromTweets(self)
+                mention.count -= 1
+                if mention.count == 0 {
+                    managedObjectContext?.delete(mention)
+                }
+            }
+        }
+    }
 }
