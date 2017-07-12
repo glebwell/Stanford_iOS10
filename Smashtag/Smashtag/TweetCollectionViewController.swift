@@ -21,7 +21,7 @@ public struct TweetMedia: CustomStringConvertible {
 public class Cache: NSCache<NSURL, NSData> {
     subscript (key: URL) -> Data? {
         get {
-            return object(forKey: key as NSURL) as? Data
+            return object(forKey: key as NSURL) as Data?
         }
         set {
             if let data = newValue {

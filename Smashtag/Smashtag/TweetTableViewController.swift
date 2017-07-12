@@ -17,7 +17,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
         didSet {
             searchTextField?.text = searchText
             searchTextField?.resignFirstResponder()
-            lastTwitterRequest = nil
+            lastTwitterRequest = nil    // REFRESHING
             tweets.removeAll()
             tableView.reloadData()
             searchForTweets()
@@ -35,6 +35,17 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                 tableView?.insertSections([0], with: .fade)
             }
         }
+    }
+
+    @IBOutlet weak var refreshCtrl: UIRefreshControl!
+
+    @IBAction func refresh(_ sender: UIRefreshControl) {
+        searchForTweets()
+    }
+
+    func insertTweets(_ newTweets: [Twitter.Tweet]) {
+        self.tweets.insert(newTweets, at: 0)
+        self.tableView.insertSections([0], with: .fade)
     }
 
     // MARK: - UITextFieldDelegate
@@ -89,7 +100,7 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
 
     private func twitterRequest() -> Twitter.Request? {
         if let query = searchText, !query.isEmpty {
-            return Twitter.Request(search: query, count: 100)
+            return Twitter.Request(search: "\(query) -filter:safe -filter:retweets", count: 100)
         }
         return nil
     }
@@ -97,16 +108,18 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
     private var lastTwitterRequest: Twitter.Request?
 
     private func searchForTweets() {
-        if let request = twitterRequest() {
+        if let request = lastTwitterRequest?.newer ?? twitterRequest() {
             lastTwitterRequest = request
             request.fetchTweets { [weak self] newTweets in
                 DispatchQueue.main.async {
                     if request == self?.lastTwitterRequest  {
-                        self?.tweets.insert(newTweets, at: 0)
-                        self?.tableView.insertSections([0], with: .fade)
+                        self?.insertTweets(newTweets)
                     }
+                    self?.refreshCtrl?.endRefreshing()
                 }
             }
+        } else {
+            refreshCtrl?.endRefreshing()
         }
     }
 
@@ -163,6 +176,11 @@ class TweetTableViewController: UITableViewController, UITextFieldDelegate {
                 imagesCollectionButton.isEnabled = true
             }
         }
+    }
+
+    // added after lection of REFRESHING
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return String(tweets.count - section)
     }
 
     // MARK: - Constants
